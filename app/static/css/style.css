@@ -1,4 +1,11 @@
-/* Global Styles */
+:root{
+    --very-light-color:#ffe8d3;
+    --light-pink:#ffa5ab;
+    --pink:#da627d;
+    --dark-pink:#9f5465;
+    --very-dark-pink:#450920;
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -6,33 +13,19 @@
 }
 
 body {
-    font-family: Arial, sans-serif;
-    background-color: #ffeef8; /* Light pink background */
-    color: #333; /* Dark text color for contrast */
+    background-color: var(--dark-pink);
+    color: var(--very-dark-pink);
 }
 
-/* Header Styles */
-.header {
-    background-color: #ff66b2; /* Pink header */
+header {
+    background-color: var(--pink);
     color: white; /* White text for header */
     padding: 20px 0;
     text-align: center;
 }
 
-/* Navigation Styles */
 .navbar {
-    background-color: #ff3385; /* Darker pink for navbar */
-}
-
-.navbar ul {
-    list-style-type: none; /* Remove default list styling */
-    padding: 10px;
-    display: flex;
-    justify-content: center; /* Center nav items */
-}
-
-.navbar li {
-    margin: 0 15px; /* Space between nav items */
+    background-color: var(--light-pink);
 }
 
 .navbar a {
