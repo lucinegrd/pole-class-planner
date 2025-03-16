@@ -1,4 +1,3 @@
-from app import db
 from app.database.tables import StudentDB
 
 class Student:
@@ -6,7 +5,12 @@ class Student:
         self.__name = name
         self.__email = email
 
-    def save_to_db(self):
-        new_eleve = StudentDB(name=self.__name, email=self.__email)
-        db.session.add(new_eleve)
-        db.session.commit()
+    @classmethod
+    def from_db(cls, db_obj):
+        """Transforme un StudentDB en Student"""
+        return cls(db_obj.name, db_obj.email)
+
+    def to_db(self):
+        """Transforme un Student en StudentDB"""
+        return StudentDB(name=self.__name, email=self.__email)
+
