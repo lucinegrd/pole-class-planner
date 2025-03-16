@@ -1,6 +1,4 @@
-from app.database.tables import db
-
-from .tables import db
+from database import db
 
 def init_db(app):
     """Crée la base de données et les tables si elles n'existent pas encore."""
