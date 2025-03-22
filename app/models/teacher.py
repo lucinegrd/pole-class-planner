@@ -13,3 +13,7 @@ class Teacher(db.Model):
     @property
     def is_admin(self):
         return self.role == "admin"
+
+    @property
+    def name(self):
+        return self.first_name + " " + self.last_name
