@@ -1,23 +1,15 @@
-from app.database.tables import TeacherDB
+from app import db
 
-class Teacher:
-    def __init__(self, name:str, email:str):
-        self.__name = name
-        self.__email = email
+class Teacher(db.Model):
+    __tablename__ = 'teacher'
 
-    @classmethod
-    def from_db(cls, db_obj):
-        """Transforme un TeacherDB en Teacher"""
-        return cls(db_obj.name, db_obj.email)
-
-    def to_db(self):
-        """Transforme un Teacher en TeacherDB"""
-        return TeacherDB(name=self.__name, email=self.__email)
+    id = db.Column(db.Integer, primary_key=True)
+    first_name = db.Column(db.String(100), nullable=False)
+    last_name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password_hash = db.Column(db.String(128), nullable=False)
+    role = db.Column(db.String(10), nullable=False, default="prof")  # "prof" ou "admin"
 
     @property
-    def name(self):
-        return self.__name
-
-    @property
-    def email(self):
-        return self.__email
+    def is_admin(self):
+        return self.role == "admin"

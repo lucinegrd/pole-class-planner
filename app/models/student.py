@@ -1,16 +1,8 @@
-from app.database.tables import StudentDB
+from app import db
 
-class Student:
-    def __init__(self, name, email):
-        self.__name = name
-        self.__email = email
-
-    @classmethod
-    def from_db(cls, db_obj):
-        """Transforme un StudentDB en Student"""
-        return cls(db_obj.name, db_obj.email)
-
-    def to_db(self):
-        """Transforme un Student en StudentDB"""
-        return StudentDB(name=self.__name, email=self.__email)
+class Student(db.Model):
+    __tablename__ = 'student'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(100), unique=True, nullable=False)
 
