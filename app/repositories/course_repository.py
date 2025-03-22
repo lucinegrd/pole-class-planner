@@ -1,41 +1,63 @@
-from app.models.course import Course
-from app.database.tables import CourseDB
-from app.database.database import db
+from app import db
+from app.models import Course, Student, Level, CourseType, Teacher, Room
+from app.repositories.base_repository import BaseRepository
 
-class CourseRepository:
-    @staticmethod
-    def get_by_id(course_id):
-        """Récupère un cours en base et le convertit en objet métier."""
-        db_course = CourseDB.query.get(course_id)
-        return Course.from_db(db_course) if db_course else None
 
-    @staticmethod
-    def get_all():
-        """Récupère tous les cours et les convertit en objets métier."""
-        db_courses = CourseDB.query.all()
-        return [Course.from_db(cours) for cours in db_courses]
+class CourseRepository(BaseRepository):
+    """Opération de bas niveau avec la base de données"""
+
+    model = Course
+
+    @classmethod
+    def get_all(cls):
+        return Course.query.order_by(Course.date).all()
 
     @staticmethod
-    def add(course):
-        """Ajoute un cours en base à partir d'un objet Course."""
-        db_course = course.to_db()
-        db.session.add(db_course)
-        db.session.commit()
-        return Course.from_db(db_course)
+    def add_student(course: Course, student: Student):
+        if student not in course.students and not course.is_full:
+            course.students.append(student)
+            db.session.commit()
+            return True
+        return False  # déjà inscrit ou cours complet
 
     @staticmethod
-    def delete(course_id):
-        """Supprime un cours par son ID."""
-        course = CourseDB.query.get(course_id)
-        if course:
-            db.session.delete(course)
+    def add_to_waiting_list(course: Course, student: Student):
+        if student not in course.waiting_list:
+            course.waiting_list.append(student)
+            db.session.commit()
+            return True
+        return False  # déjà en liste d’attente
+
+    @staticmethod
+    def remove_student(course: Course, student: Student):
+        if student in course.students:
+            course.students.remove(student)
             db.session.commit()
             return True
         return False
 
     @staticmethod
-    def update(course):
-        """Met à jour un cours"""
-        db_course = course.to_db()
-        db.session.merge(db_course)
-        db.session.commit()
+    def remove_from_waiting_list(course: Course, student: Student):
+        if student in course.waiting_list:
+            course.waiting_list.remove(student)
+            db.session.commit()
+            return True
+        return False
+
+    @staticmethod
+    def get_filtered(level_name=None, course_type_name=None, teacher_name=None, room_name=None):
+        query = Course.query
+
+        if level_name:
+            query = query.join(Level).filter(Level.name == level_name)
+
+        if course_type_name:
+            query = query.join(CourseType).filter(CourseType.name == course_type_name)
+
+        if teacher_name:
+            query = query.join(Teacher).filter(Teacher.first_name == teacher_name)
+
+        if room_name:
+            query = query.join(Room).filter(Room.name == room_name)
+
+        return query.order_by(Course.date).all()
