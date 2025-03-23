@@ -61,3 +61,24 @@ def sample_course():
         date=datetime(2025, 4, 1, 18, 0),
         course_type=course_type
     )
+
+@pytest.fixture
+def form_data(app):
+    """
+    Prépare un dictionnaire simulant des données de formulaire pour la création de cours.
+    """
+    teacher = Teacher(first_name="Paul", last_name="Prof", email="paul@example.com", password_hash="x")
+    level = Level(name="Débutant")
+    room = Room(name="Studio A")
+    course_type = CourseType(name="Pole Flow", description="Fluidité", duration=60, credit=1, places=2)
+
+    db.session.add_all([teacher, level, room, course_type])
+    db.session.commit()
+
+    return {
+        "teacher_id": str(teacher.id),
+        "level_id": str(level.id),
+        "room_id": str(room.id),
+        "course_type_id": str(course_type.id),
+        "date": "2025-04-01T18:00"
+    }

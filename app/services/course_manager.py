@@ -24,8 +24,6 @@ class CourseManager:
         form_data : un dict (ex: request.form.to_dict())
         Attend les clés : teacher_id, level_id, date, room_id, course_type_id
         """
-        from app.models import Teacher, Level, Room, CourseType
-
         course = Course(
             teacher=TeacherRepository.get_by_id(int(form_data['teacher_id'])),
             level=LevelRepository.get_by_id(int(form_data['level_id'])),
