@@ -3,7 +3,7 @@ from app import create_app, db
 from app.models import Course, Teacher, Level, Room, CourseType, Student
 from datetime import datetime
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def app():
     """
     Initialise l'application Flask pour les tests avec une base en mémoire.
@@ -45,7 +45,14 @@ def sample_course():
     teacher = Teacher(first_name="Anna", last_name="Smith", email="anna@example.com", password_hash="hashed")
     level = Level(name="Débutant")
     room = Room(name="Studio A")
-    course_type = CourseType(name="Pole Flow", places=3)
+    course_type = CourseType(
+        name="Pole Flow",
+        description="Cours fluide",
+        duration=60,
+        credit=1,
+        places=2
+    )
+
 
     return Course(
         teacher=teacher,
