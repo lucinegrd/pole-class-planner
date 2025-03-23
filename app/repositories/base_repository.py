@@ -1,3 +1,5 @@
+import sqlalchemy
+
 from app import db
 
 class BaseRepository:
@@ -8,7 +10,7 @@ class BaseRepository:
     def get_all(cls):
         try:
             return cls.model.query.order_by(cls.model.name).all()
-        except AttributeError:
+        except  sqlalchemy.exc.ArgumentError:
             return cls.model.query.all()
 
     @classmethod
