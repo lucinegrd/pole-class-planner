@@ -15,7 +15,7 @@ class BaseRepository:
 
     @classmethod
     def get_by_id(cls, obj_id: int):
-        return cls.model.query.get(obj_id)
+        return db.session.get(cls.model, obj_id)
 
     @classmethod
     def create(cls, obj):
