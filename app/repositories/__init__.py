@@ -3,3 +3,4 @@ from .course_repository import CourseRepository
 from .teacher_repository import TeacherRepository
 from .room_repository import RoomRepository
 from .level_repository import LevelRepository
+from .student_repository import StudentRepository
