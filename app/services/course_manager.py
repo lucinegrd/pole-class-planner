@@ -1,4 +1,4 @@
-from app.models import Course
+from app.models import Course, CourseType
 from app.repositories.course_repository import CourseRepository
 from app.repositories.course_type_repository import CourseTypeRepository
 from app.repositories.level_repository import LevelRepository
@@ -19,17 +19,33 @@ class CourseManager:
 
 
     @staticmethod
-    def create_from_form(form_data):
+    def create_from_form(form):
         """
-        form_data : un dict (ex: request.form.to_dict())
+        form_data : un formulaire
         Attend les clés : teacher_id, level_id, date, room_id, course_type_id
         """
+        # Si le type est "autre", créer un nouveau CourseType
+        if form.get("course_type") == "autre":
+            new_type = CourseType(
+                name=form.get("custom_name"),
+                description=form.get("custom_description"),
+                duration=int(form.get("custom_duration")),
+                credit=int(form.get("custom_credit")),
+                places=int(form.get("custom_places"))
+            )
+            CourseTypeRepository.create(new_type)
+            course_type_id = new_type.id
+        else:
+            course_type_id = int(form.get("course_type"))
+
+        date_obj = datetime.strptime(form.get("datetime"), "%Y-%m-%d %H:%M")
+
         course = Course(
-            teacher=TeacherRepository.get_by_id(int(form_data['teacher_id'])),
-            level=LevelRepository.get_by_id(int(form_data['level_id'])),
-            date=datetime.strptime(form_data['date'], "%Y-%m-%dT%H:%M"),
-            room=RoomRepository.get_by_id(int(form_data['room_id'])),
-            course_type=CourseTypeRepository.get_by_id(int(form_data['course_type_id']))
+            id_teacher=int(form.get("teacher")),
+            id_level=int(form.get("level")),
+            date=date_obj,
+            id_room=int(form.get("room")),
+            id_course_type=course_type_id
         )
 
         CourseRepository.create(course)
