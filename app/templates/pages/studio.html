@@ -1,0 +1,82 @@
+{% extends "partials/base.html" %}
+{% block content %}
+<h2>Le Studio</h2>
+
+<!-- PROFESSEURS -->
+<h3>Professeurs</h3>
+<ul>
+    {% for prof in teachers %}
+        <li>{{ prof.first_name }} {{ prof.last_name }}
+            <a href="{{ url_for('teachers.edit_teacher', id=prof.id) }}">(éditer)</a>
+            <a href="{{ url_for('teachers.delete_teacher', id=prof.id) }}">(supprimer)</a>
+        </li>
+    {% endfor %}
+</ul>
+<form action="{{ url_for('teachers.add_teacher') }}" method="POST">
+    <input type="text" name="first_name" placeholder="Prénom" required>
+    <input type="text" name="last_name" placeholder="Nom" required>
+    <input type="email" name="email" placeholder="Email" required>
+    <input type="text" name="password" placeholder="Mot de passe" required>
+    <button type="submit">Ajouter un professeur</button>
+</form>
+
+<!-- NIVEAUX -->
+<h3>Niveaux</h3>
+<ul>
+    {% for level in levels %}
+        <li>{{ level.name }}
+            <a href="{{ url_for('level.edit_level', id=level.id) }}">(éditer)</a>
+            <a href="{{ url_for('level.delete_level', id=level.id) }}">(supprimer)</a>
+        </li>
+    {% endfor %}
+</ul>
+<form action="{{ url_for('level.add_level') }}" method="POST">
+    <input type="text" name="name" placeholder="Nom du niveau" required>
+    <button type="submit">Ajouter un niveau</button>
+</form>
+
+<!-- SALLES -->
+<h3>Salles</h3>
+<ul>
+    {% for room in rooms %}
+        <li>{{ room.name }}
+            <a href="{{ url_for('room.edit_room', id=room.id) }}">(éditer)</a>
+            <a href="{{ url_for('room.delete_room', id=room.id) }}">(supprimer)</a>
+        </li>
+    {% endfor %}
+</ul>
+<form action="{{ url_for('room.add_room') }}" method="POST">
+    <input type="text" name="name" placeholder="Nom de la salle" required>
+    <button type="submit">Ajouter une salle</button>
+</form>
+
+<!-- TYPES DE COURS -->
+<h3>Types de cours</h3>
+<ul>
+    {% for ct in course_types %}
+        <li>
+            {{ ct.name }} ({{ ct.duration }} min - {{ ct.credit }} crédits - {{ ct.places }} places)
+            <form action="{{ url_for('course_type.edit_course_type', id=ct.id) }}" method="POST" style="display: inline;">
+                <input type="text" name="name" value="{{ ct.name }}" required>
+                <input type="text" name="description" value="{{ ct.description }}" required>
+                <input type="number" name="duration" value="{{ ct.duration }}" min="0" required>
+                <input type="number" name="credit" value="{{ ct.credit }}" min="0" required>
+                <input type="number" name="places" value="{{ ct.places }}" min="0" required>
+                <button type="submit">Modifier</button>
+            </form>
+            <a href="{{ url_for('course_type.delete_course_type', id=ct.id) }}">(supprimer)</a>
+        </li>
+    {% endfor %}
+</ul>
+
+<h4>Ajouter un type de cours</h4>
+<form action="{{ url_for('course_type.add_course_type') }}" method="POST">
+    <input type="text" name="name" placeholder="Nom" required>
+    <input type="text" name="description" placeholder="Description" required>
+    <input type="number" name="duration" placeholder="Durée (min)" min="0" required>
+    <input type="number" name="credit" placeholder="Crédits" min="0" required>
+    <input type="number" name="places" placeholder="Places" min="0" required>
+    <button type="submit">Ajouter</button>
+</form>
+
+{% endblock %}
