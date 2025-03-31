@@ -44,6 +44,11 @@
             <label for="custom_places" class="form-label">Places disponibles :</label>
             <input type="number" id="custom_places" name="custom_places" class="form-control" min="0" value="{{ form_data.get('custom_places') if form_data else '' }}">
         </div>
+
+         <div class="col-md-4">
+            <label for="custom_color" class="form-label">Couleur du cours :</label>
+            <input type="text" id="custom_color" name="custom_color" class="form-control" value="{{ form_data.get('custom_color') if form_data else '' }}">
+        </div>
     </div>
 
     <!-- Professeur -->

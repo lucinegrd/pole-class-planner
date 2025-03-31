@@ -8,4 +8,5 @@ class CourseType(db.Model):
     duration = db.Column(db.Integer, nullable=False)
     credit = db.Column(db.Integer, nullable=False)
     places = db.Column(db.Integer, nullable=False)
+    color = db.Column(db.String(100), nullable=False)
 

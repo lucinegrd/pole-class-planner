@@ -45,6 +45,7 @@ def edit_course_type(id):
     ct.duration = int(request.form.get("duration"))
     ct.credit = int(request.form.get("credit"))
     ct.places = int(request.form.get("places"))
+    ct.color = request.form.get("color")
     db.session.commit()
     print("Type de cours modifié.", "success")
     return redirect(url_for("main.studio"))

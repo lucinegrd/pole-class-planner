@@ -12,6 +12,10 @@ def add_level():
     if not name:
         print("Nom requis.", "error")
         return redirect(url_for("main.studio"))
+    color = request.form.get("color")
+    if not color:
+        print("Color requis.", "error")
+        return redirect(url_for("main.studio"))
     level = Level(name=name)
     LevelRepository.create(level)
     print("Niveau ajouté.", "success")

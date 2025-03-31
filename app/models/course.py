@@ -24,3 +24,7 @@ class Course(db.Model):
     @property
     def is_full(self):
         return len(self.students) >= self.course_type.places
+
+    @property
+    def places(self):
+        return self.course_type.places - len(self.students)

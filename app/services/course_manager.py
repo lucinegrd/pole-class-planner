@@ -31,7 +31,8 @@ class CourseManager:
                 description=form.get("custom_description"),
                 duration=int(form.get("custom_duration")),
                 credit=int(form.get("custom_credit")),
-                places=int(form.get("custom_places"))
+                places=int(form.get("custom_places")),
+                color = form.get("custom_color")
             )
             CourseTypeRepository.create(new_type)
             course_type_id = new_type.id
