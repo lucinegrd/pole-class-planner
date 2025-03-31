@@ -51,4 +51,4 @@ def add_courses():
     except Exception as e:
         print(f"Erreur lors de la création du cours : {str(e)}")
 
-    return redirect(url_for("courses.add_courses"))
+    return redirect(url_for("courses_routes.add_courses"))
