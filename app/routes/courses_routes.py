@@ -8,7 +8,25 @@ courses_bp = Blueprint("courses", __name__)
 
 @courses_bp.route("/courses", methods=["GET"])
 def get_courses():
-    pass
+    all_courses = CourseRepository.get_all()
+    events = [
+        {
+            "id": course.id,
+            "title": course.course_type.name,
+            "start": course.date.isoformat(),
+            "extendedProps": {
+                "teacher": course.teacher.first_name,
+                "level": course.level.name,
+                "places": course.places,
+                "duration": course.course_type.duration,
+                "color":course.course_type.color,
+                "colorLevel":course.level.color,
+            }
+        }
+        for course in all_courses
+    ]
+    return render_template('pages/calendar.html', events=events)
+
 
 @courses_bp.route("/courses/form", methods=["POST", "GET"])
 def add_courses():
@@ -33,7 +51,7 @@ def add_courses():
             form_data=form
         )
     if form.get("course_type") == "autre":
-        custom_fields = ["custom_name", "custom_description", "custom_duration", "custom_credit", "custom_places"]
+        custom_fields = ["custom_name", "custom_description", "custom_duration", "custom_credit", "custom_places", "custom_color"]
         if not all(form.get(f) for f in custom_fields):
             print("Tous les champs du cours personnalisé doivent être remplis.", "error")
             return render_template(
@@ -51,4 +69,4 @@ def add_courses():
     except Exception as e:
         print(f"Erreur lors de la création du cours : {str(e)}")
 
-    return redirect(url_for("courses_routes.add_courses"))
+    return redirect(url_for("courses.add_courses"))
