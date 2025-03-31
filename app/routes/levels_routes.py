@@ -16,7 +16,7 @@ def add_level():
     if not color:
         print("Color requis.", "error")
         return redirect(url_for("main.studio"))
-    level = Level(name=name)
+    level = Level(name=name, color=color)
     LevelRepository.create(level)
     print("Niveau ajouté.", "success")
     return redirect(url_for("main.studio"))
