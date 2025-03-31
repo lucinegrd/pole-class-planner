@@ -1,80 +1,102 @@
 {% extends "partials/base.html" %}
 
 {% block content %}
-    <h2>Ajouter un nouveau cours</h2>
-    <form action="/courses/form" method="POST">
-        <!-- Type de cours -->
-        <label for="course_type">Type de cours :</label>
-        <select id="course_type" name="course_type" onchange="handleCourseTypeChange()">
+<h2 class="mb-4">Ajouter un nouveau cours</h2>
+
+<form action="/courses/form" method="POST" class="row g-3">
+
+    <!-- Type de cours -->
+    <div class="col-md-6">
+        <label for="course_type" class="form-label">Type de cours :</label>
+        <select id="course_type" name="course_type" class="form-select" onchange="handleCourseTypeChange()">
             {% for course_type in courses_types %}
                 <option value="{{ course_type.id }}" {% if form_data and form_data.get('course_type') == course_type.id|string and form_data.get('course_type') != "autre"%}selected{% endif %}>
                     {{ course_type.name }}
                 </option>
             {% endfor %}
             <option value="autre" {% if form_data and form_data.get('course_type') == "autre" %}selected{% endif %}>Autre</option>
-        </select><br><br>
+        </select>
+    </div>
 
-        <!-- Champs si "Autre" -->
-        <div id="custom_course_fields" class="{% if form_data and form_data.get('course_type') == 'autre' %}{% else %}hidden{% endif %}">
-            <label for="custom_name">Nom du cours :</label>
-            <input type="text" id="custom_name" name="custom_name" value="{{ form_data.get('custom_name') if form_data else '' }}"><br>
-
-            <label for="custom_description">Description :</label><br>
-            <textarea id="custom_description" name="custom_description">{{ form_data.get('custom_description') if form_data else '' }}</textarea><br>
-
-            <label for="custom_duration">Durée (minutes) :</label>
-            <input type="number" id="custom_duration" name="custom_duration" min="0" value="{{ form_data.get('custom_duration') if form_data else '' }}"><br>
-
-            <label for="custom_credit">Nombre de crédits :</label>
-            <input type="number" id="custom_credit" name="custom_credit" min="0" value="{{ form_data.get('custom_credit') if form_data else '' }}"><br>
-
-            <label for="custom_places">Places disponibles :</label>
-            <input type="number" id="custom_places" name="custom_places" min="0" value="{{ form_data.get('custom_places') if form_data else '' }}"><br><br>
+    <!-- Champs si "Autre" -->
+    <div id="custom_course_fields" class="{% if form_data and form_data.get('course_type') == 'autre' %}{% else %}d-none{% endif %}">
+        <div class="col-md-6">
+            <label for="custom_name" class="form-label">Nom du cours :</label>
+            <input type="text" id="custom_name" name="custom_name" class="form-control" value="{{ form_data.get('custom_name') if form_data else '' }}">
         </div>
 
-        <!-- Professeur -->
-        <label for="teacher">Professeur :</label>
-        <select id="teacher" name="teacher">
+        <div class="col-md-12">
+            <label for="custom_description" class="form-label">Description :</label>
+            <textarea id="custom_description" name="custom_description" class="form-control">{{ form_data.get('custom_description') if form_data else '' }}</textarea>
+        </div>
+
+        <div class="col-md-4">
+            <label for="custom_duration" class="form-label">Durée (minutes) :</label>
+            <input type="number" id="custom_duration" name="custom_duration" class="form-control" min="0" value="{{ form_data.get('custom_duration') if form_data else '' }}">
+        </div>
+
+        <div class="col-md-4">
+            <label for="custom_credit" class="form-label">Nombre de crédits :</label>
+            <input type="number" id="custom_credit" name="custom_credit" class="form-control" min="0" value="{{ form_data.get('custom_credit') if form_data else '' }}">
+        </div>
+
+        <div class="col-md-4">
+            <label for="custom_places" class="form-label">Places disponibles :</label>
+            <input type="number" id="custom_places" name="custom_places" class="form-control" min="0" value="{{ form_data.get('custom_places') if form_data else '' }}">
+        </div>
+    </div>
+
+    <!-- Professeur -->
+    <div class="col-md-6">
+        <label for="teacher" class="form-label">Professeur :</label>
+        <select id="teacher" name="teacher" class="form-select">
             {% for teacher in teachers %}
                 <option value="{{ teacher.id }}" {% if form_data and form_data.get('teacher') == teacher.id|string %}selected{% endif %}>
                     {{ teacher.first_name }}
                 </option>
             {% endfor %}
-        </select><br><br>
+        </select>
+    </div>
 
-        <!-- Date et Heure -->
-        <label for="datetime">Date et heure :</label>
-        <input type="text" id="datetime" name="datetime" value="{{ form_data.get('datetime') if form_data else '' }}">
-        <br><br>
+    <!-- Date et Heure -->
+    <div class="col-md-6">
+        <label for="datetime" class="form-label">Date et heure :</label>
+        <input type="text" id="datetime" name="datetime" class="form-control" value="{{ form_data.get('datetime') if form_data else '' }}">
+    </div>
 
-        <!-- Niveau -->
-        <label for="level">Niveau :</label>
-        <select id="level" name="level">
+    <!-- Niveau -->
+    <div class="col-md-6">
+        <label for="level" class="form-label">Niveau :</label>
+        <select id="level" name="level" class="form-select">
             {% for level in levels %}
                 <option value="{{ level.id }}" {% if form_data and form_data.get('level') == level.id|string %}selected{% endif %}>
                     {{ level.name }}
                 </option>
             {% endfor %}
-        </select><br><br>
+        </select>
+    </div>
 
-
-        <!-- Salle -->
-        <label for="room">Salle :</label>
-        <select id="room" name="room">
+    <!-- Salle -->
+    <div class="col-md-6">
+        <label for="room" class="form-label">Salle :</label>
+        <select id="room" name="room" class="form-select">
             {% for room in rooms %}
                 <option value="{{ room.id }}" {% if form_data and form_data.get('room') == room.id|string %}selected{% endif %}>
                     {{ room.name }}
                 </option>
             {% endfor %}
-        </select><br><br>
+        </select>
+    </div>
 
+    <!-- Submit -->
+    <div class="col-12">
+        <button type="submit" class="btn btn-success">Ajouter le cours</button>
+    </div>
+</form>
 
-        <button type="submit">Ajouter le cours</button>
-    </form>
-
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
-    <script>
+<!-- Flatpickr + gestion dynamique -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
     flatpickr("#datetime", {
         enableTime: true,
         dateFormat: "Y-m-d H:i",
@@ -84,28 +106,11 @@
         maxTime: "22:00",
         minDate: "today"
     });
-    </script>
 
-    <script>
     function handleCourseTypeChange() {
         const courseTypeSelect = document.getElementById("course_type");
         const customFields = document.getElementById("custom_course_fields");
-
-        if (courseTypeSelect.value === "autre") {
-            customFields.classList.remove("hidden");
-        } else {
-            customFields.classList.add("hidden");
-        }
+        customFields.classList.toggle("d-none", courseTypeSelect.value !== "autre");
     }
-    </script>
-
-    <style>
-    .hidden {
-        display: none;
-    }
-    </style>
-
-
-
+</script>
 {% endblock %}
-

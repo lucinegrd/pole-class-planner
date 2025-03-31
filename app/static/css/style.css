@@ -1,57 +1,80 @@
-:root{
-    --very-light-color:#ffe8d3;
-    --light-pink:#ffa5ab;
-    --pink:#da627d;
-    --dark-pink:#9f5465;
-    --very-dark-pink:#450920;
+:root {
+    --main-purple: #5B2A86;
+    --light-purple: #A084CA;
+    --gold: #F4C95D;
+    --background: #FAF5FF;
 }
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
+/* Appliquer les couleurs */
 body {
-    background-color: var(--dark-pink);
-    color: var(--very-dark-pink);
-}
-
-header {
-    background-color: var(--pink);
-    color: white; /* White text for header */
-    padding: 20px 0;
-    text-align: center;
+    background-color: var(--background);
 }
 
 .navbar {
-    background-color: var(--light-pink);
+    background-color: var(--light-purple) !important;
 }
 
-.navbar a {
-    text-decoration: none; /* Remove underline */
-    color: white; /* White text color */
-    font-weight: bold;
-    transition: color 0.3s; /* Smooth transition for hover effect */
+.bg-purple {
+    background-color: var(--main-purple) !important;
 }
 
-.navbar a:hover {
-    color: #ffeef8; /* Light pink on hover */
+
+.navbar .nav-link, .navbar-brand {
+    color: white !important;
 }
 
-/* Main Content Styles */
-.content {
-    padding: 20px;
-    text-align: center; /* Center the content */
+.navbar .nav-link:hover {
+    color: var(--gold) !important;
 }
 
-/* Footer Styles */
-.footer {
-    background-color: #ff66b2; /* Same as header */
-    color: white; /* White text */
-    text-align: center;
-    padding: 15px 0;
-    position: relative; /* To position footer properly */
-    bottom: 0;
-    width: 100%;
+header {
+    background-color: var(--main-purple);
+    color: white;
 }
+
+footer {
+    background-color: var(--light-purple);
+    color: white;
+}
+
+.btn-success {
+    background-color: var(--main-purple);
+    border-color: var(--main-purple);
+}
+
+.btn-success:hover {
+    background-color: var(--light-purple);
+    border-color: var(--light-purple);
+}
+
+.btn-outline-success {
+    color: var(--light-purple);
+    border: 2px solid var(--light-purple);
+    background-color: transparent;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-success:hover {
+    background-color: var(--light-purple);
+    color: white;
+    border-color: var(--light-purple);
+}
+
+
+.btn-outline-danger {
+    color: var(--main-purple);
+    border-color: var(--main-purple);
+}
+
+.btn-outline-danger:hover {
+    background-color: var(--gold);
+    color: black;
+    border-color: var(--gold);
+}
+
+/* Cartes ou blocs */
+.card {
+    border: none;
+    box-shadow: 0 2px 8px rgba(91, 42, 134, 0.1);
+}
+
