@@ -1,5 +1,6 @@
 from flask import Blueprint, request, redirect, url_for
 from werkzeug.security import generate_password_hash
+from flask_login import login_required, current_user
 
 from app.models import Teacher
 from app.repositories import TeacherRepository
@@ -7,6 +8,7 @@ from app.repositories import TeacherRepository
 teachers_bp = Blueprint("teachers", __name__)
 
 @teachers_bp.route("/studio/teacher/add", methods=["POST"])
+@login_required
 def add_teacher():
     first = request.form.get("first_name")
     last = request.form.get("last_name")
@@ -29,6 +31,7 @@ def add_teacher():
     return redirect(url_for("main.studio"))
 
 @teachers_bp.route("/studio/teacher/delete/<int:id>")
+@login_required
 def delete_teacher(id):
     teacher = TeacherRepository.get_by_id(id)
     TeacherRepository.delete(teacher)
@@ -36,6 +39,7 @@ def delete_teacher(id):
     return redirect(url_for("main.studio"))
 
 @teachers_bp.route("/studio/teacher/edit/<int:id>", methods=["POST"])
+@login_required
 def edit_teacher(id):
     teacher = TeacherRepository.get_by_id(id)
     TeacherRepository.edit_teacher(teacher, request.form.get("first_name"), request.form.get("last_name"), request.form.get("email"))

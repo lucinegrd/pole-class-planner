@@ -1,20 +1,24 @@
 from flask import Blueprint, request, jsonify, render_template
 from app import db
 from app.repositories.course_repository import CourseRepository
+from flask_login import login_required, current_user
 
 students_bp = Blueprint("students", __name__)
 
 @students_bp.route("/students")
+@login_required
 def get_students():
     #students = StudentDB.query.all()
     return jsonify([student.description() for student in students])
 
 
 @students_bp.route("/students/form")
+@login_required
 def form_students():
     return render_template("pages/add_student.html")
 
 @students_bp.route("/students/add", methods=["POST"])
+@login_required
 def add_student():
     name = request.form["name"]
     email = request.form["email"]

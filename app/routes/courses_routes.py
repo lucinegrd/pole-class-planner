@@ -1,13 +1,15 @@
 
 from flask import Blueprint, request, jsonify, render_template, flash, redirect, url_for
-
+from flask_login import login_required, current_user
 from app.repositories import CourseRepository, TeacherRepository, RoomRepository, LevelRepository, CourseTypeRepository
 from app.services import CourseManager
 
 courses_bp = Blueprint("courses", __name__)
 
 @courses_bp.route("/courses", methods=["GET"])
+@login_required
 def get_courses():
+
     all_courses = CourseRepository.get_all()
     events = [
         {
@@ -29,7 +31,9 @@ def get_courses():
 
 
 @courses_bp.route("/courses/form", methods=["POST", "GET"])
+@login_required
 def add_courses():
+
     if request.method == "GET":
         teachers = TeacherRepository.get_all()
         rooms = RoomRepository.get_all()

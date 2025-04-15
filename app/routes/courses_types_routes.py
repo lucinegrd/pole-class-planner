@@ -1,4 +1,5 @@
 from flask import Blueprint, request, redirect, url_for
+from flask_login import login_required, current_user
 
 from app import db
 from app.models import CourseType
@@ -8,6 +9,7 @@ course_type_bp = Blueprint("course_type", __name__)
 
 
 @course_type_bp.route("/studio/course_type/add", methods=["POST"])
+@login_required
 def add_course_type():
     name = request.form.get("name")
     description = request.form.get("description")
@@ -31,6 +33,7 @@ def add_course_type():
     return redirect(url_for("main.studio"))
 
 @course_type_bp.route("/studio/course_type/delete/<int:id>")
+@login_required
 def delete_course_type(id):
     course_type = CourseTypeRepository.get_by_id(id)
     CourseTypeRepository.delete(course_type)
@@ -38,6 +41,7 @@ def delete_course_type(id):
     return redirect(url_for("main.studio"))
 
 @course_type_bp.route("/studio/course_type/edit/<int:id>", methods=["POST"])
+@login_required
 def edit_course_type(id):
     ct = CourseTypeRepository.get_by_id(id)
     ct.name = request.form.get("name")
