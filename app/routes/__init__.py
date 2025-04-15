@@ -7,7 +7,7 @@ from app.routes.rooms_routes import room_bp
 from app.routes.students_routes import students_bp
 from app.routes.main_routes import main_bp
 from app.routes.teachers_routes import teachers_bp
-
+from app.routes.auth import auth_bp
 
 def register_routes(app):
     """Enregistre toutes les routes de l'application."""
@@ -18,3 +18,4 @@ def register_routes(app):
     app.register_blueprint(course_type_bp)
     app.register_blueprint(room_bp)
     app.register_blueprint(level_bp)
+    app.register_blueprint(auth_bp)
