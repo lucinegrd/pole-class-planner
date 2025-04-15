@@ -1,6 +1,7 @@
 from app import db
+from flask_login import UserMixin
 
-class Teacher(db.Model):
+class Teacher(db.Model, UserMixin):
     __tablename__ = 'teacher'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -8,11 +9,7 @@ class Teacher(db.Model):
     last_name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
-    role = db.Column(db.String(10), nullable=False, default="prof")  # "prof" ou "admin"
-
-    @property
-    def is_admin(self):
-        return self.role == "admin"
+    is_admin = db.Column(db.Boolean, nullable=False, default=False)
 
     @property
     def name(self):

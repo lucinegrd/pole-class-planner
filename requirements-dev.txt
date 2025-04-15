@@ -6,3 +6,4 @@ pytest-flask
 pylint
 flake8
 black
+flask-login
