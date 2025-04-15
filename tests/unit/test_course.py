@@ -59,9 +59,9 @@ def test_is_full_returns_true_when_students_reach_limit(app):
 
     # Préparer les objets liés
     teacher = Teacher(first_name="Lucine", last_name="Prof", email="lucine1@example.com", password_hash="x")
-    level = Level(name="Débutant")
+    level = Level(name="Débutant", color="green")
     room = Room(name="Studio A")
-    course_type = CourseType(name="Pole Flow", description="Fluidité", duration=60, credit=1, places=3)
+    course_type = CourseType(name="Pole Flow", description="Fluidité", duration=60, credit=1, places=3, color="purple")
 
     db.session.add_all([teacher, level, room, course_type])
     db.session.commit()

@@ -16,7 +16,8 @@ def test_create_course_type_and_get_all(app):
         description="Style fluide et sensuel",
         duration=60,
         credit=1,
-        places=12
+        places=12,
+        color="DA12DC"
     )
     CourseTypeRepository.create(ct)
 
@@ -38,7 +39,8 @@ def test_get_course_type_by_id(app):
         description="Renforcement musculaire",
         duration=60,
         credit=1,
-        places=10
+        places=10,
+        color="DA12DC"
     )
     CourseTypeRepository.create(ct)
 
@@ -61,7 +63,8 @@ def test_delete_course_type(app):
         description="Travail sur la fluidité",
         duration=60,
         credit=1,
-        places=8
+        places=8,
+        color="DA12DC"
     )
     CourseTypeRepository.create(ct)
     CourseTypeRepository.delete(ct)

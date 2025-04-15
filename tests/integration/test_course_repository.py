@@ -112,14 +112,14 @@ def test_get_filtered_by_level(app):
     """
     Test : get_filtered retourne les bons cours selon le niveau
     """
-    level = Level(name="Intermédiaire")
+    level = Level(name="Intermédiaire", color="orange")
     LevelRepository.create(level)
 
     course = Course(
         teacher=Teacher(first_name="Paul", last_name="Dupont", email="paul@example.com", password_hash="x"),
         level=level,
         room=Room(name="Studio B"),
-        course_type=CourseType(name="Pole Strong", description="Intense", duration=60, credit=1, places=10),
+        course_type=CourseType(name="Pole Strong", description="Intense", duration=60, credit=1, places=10, color="blue"),
         date=datetime(2025, 4, 10, 18, 0)
     )
     CourseRepository.create(course)
