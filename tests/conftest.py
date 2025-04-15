@@ -44,14 +44,15 @@ def sample_course():
     - une date fixe
     """
     teacher = Teacher(first_name="Anna", last_name="Smith", email="anna@example.com", password_hash="hashed")
-    level = Level(name="Débutant")
+    level = Level(name="Débutant", color="125643")
     room = Room(name="Studio A")
     course_type = CourseType(
         name="Pole Flow",
         description="Cours fluide",
         duration=60,
         credit=1,
-        places=2
+        places=2,
+        color="#C9D4FF"
     )
 
     return Course(
@@ -66,9 +67,9 @@ def sample_course():
 def setup_base_entities(session):
     """Crée les entités nécessaires en BDD pour tous les tests"""
     teacher = Teacher(first_name="Paul", last_name="Prof", email="paul@example.com", password_hash=generate_password_hash("pass"), role="prof")
-    level = Level(name="Débutant")
+    level = Level(name="Débutant", color="green")
     room = Room(name="Studio A")
-    course_type = CourseType(name="Pole Flow", description="Flow fluide", duration=60, credit=1, places=2)
+    course_type = CourseType(name="Pole Flow", description="Flow fluide", duration=60, credit=1, places=2, color="#C9D4FF")
 
     db.session.add_all([teacher, level, room, course_type])
     db.session.commit()
