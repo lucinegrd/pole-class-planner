@@ -64,7 +64,7 @@ def test_add_student_to_nonexistent_course(app):
 
 def test_get_filtered_courses_by_level(app):
     level = Level(name="Avancé", color="blue")
-    teacher = Teacher(first_name="Lulu", last_name="Pole", email="lulu@example.com", password_hash="x", role="prof")
+    teacher = Teacher(first_name="Lulu", last_name="Pole", email="lulu@example.com", password_hash="x", is_admin=False)
     room = Room(name="Studio Z")
     course_type = CourseType(name="Exotic", description="Exotique", duration=60, credit=1, places=10, color="#C9D4FF")
     db.session.add_all([level, teacher, room, course_type])

@@ -15,7 +15,8 @@ def test_create_teacher_and_get_all(app):
         first_name="Lucine",
         last_name="Giraud",
         email="lucine@example.com",
-        password_hash="hashed"
+        password_hash="hashed",
+        is_admin=False
     )
     TeacherRepository.create(teacher)
 
@@ -36,7 +37,8 @@ def test_get_teacher_by_id(app):
         first_name="Anna",
         last_name="Morel",
         email="anna@example.com",
-        password_hash="x"
+        password_hash="x",
+        is_admin=False
     )
     TeacherRepository.create(teacher)
 
@@ -57,7 +59,8 @@ def test_get_teacher_by_email(app):
         first_name="Claire",
         last_name="Durand",
         email="claire@example.com",
-        password_hash="z"
+        password_hash="z",
+        is_admin=False
     )
     TeacherRepository.create(teacher)
 
@@ -79,7 +82,8 @@ def test_delete_teacher(app):
         first_name="Jean",
         last_name="Martin",
         email="jean@example.com",
-        password_hash="y"
+        password_hash="y",
+        is_admin=False
     )
     TeacherRepository.create(teacher)
     TeacherRepository.delete(teacher)

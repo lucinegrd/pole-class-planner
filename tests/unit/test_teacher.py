@@ -15,14 +15,14 @@ def test_create_teacher():
         last_name="Giraud",
         email="lucine@example.com",
         password_hash="hashed_password",
-        role="prof"
+        is_admin=False
     )
 
     assert teacher.first_name == "Lucine"
     assert teacher.last_name == "Giraud"
     assert teacher.email == "lucine@example.com"
     assert teacher.password_hash == "hashed_password"
-    assert teacher.role == "prof"
+    assert teacher.is_admin == False
 
 def test_teacher_is_admin_property():
     """
@@ -33,8 +33,8 @@ def test_teacher_is_admin_property():
     Résultat attendu :
         - is_admin retourne True pour le premier, False pour le second
     """
-    admin = Teacher(first_name="Admin", last_name="One", email="admin@example.com", password_hash="x", role="admin")
-    prof = Teacher(first_name="Prof", last_name="Two", email="prof@example.com", password_hash="y", role="prof")
+    admin = Teacher(first_name="Admin", last_name="One", email="admin@example.com", password_hash="x", is_admin=True)
+    prof = Teacher(first_name="Prof", last_name="Two", email="prof@example.com", password_hash="y", is_admin=False)
 
     assert admin.is_admin is True
     assert prof.is_admin is False
