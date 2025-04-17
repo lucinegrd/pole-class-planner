@@ -3,6 +3,7 @@
     --light-purple: #A084CA;
     --gold: #F4C95D;
     --background: #FAF5FF;
+    --text-dark : #2E2E2E;
 }
 
 /* Appliquer les couleurs */
@@ -27,6 +28,10 @@ body {
     color: var(--gold) !important;
 }
 
+.nav-link, .connected{
+    font-size: 15px;
+}
+
 header {
     background-color: var(--main-purple);
     color: white;
@@ -35,6 +40,15 @@ header {
 footer {
     background-color: var(--light-purple);
     color: white;
+}
+
+input[type="color"] {
+    height: 38px;
+    padding: 4px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    vertical-align: middle;
+    cursor: pointer;
 }
 
 .btn-success {
@@ -72,9 +86,147 @@ footer {
     border-color: var(--gold);
 }
 
-/* Cartes ou blocs */
 .card {
     border: none;
     box-shadow: 0 2px 8px rgba(91, 42, 134, 0.1);
 }
 
+.fc .fc-toolbar-title {
+    font-size: 1.5rem;
+    color: var(--main-purple);
+    text-transform: capitalize;
+}
+
+.fc-button {
+    background-color: var(--main-purple) !important;
+    border: none !important;
+    color: white !important;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.5rem;
+}
+
+
+.fc-button:hover {
+    background-color: var(--light-purple) !important;
+}
+
+.fc-col-header-cell-cushion {
+    color: black !important;
+    text-decoration: none !important;
+    text-transform: uppercase;
+}
+
+.fc-daygrid-day-number {
+    color: black !important;
+    text-decoration: none !important;
+}
+
+.fc-day-today {
+    background-color: transparent !important;
+}
+
+.fc-event {
+    border: none;
+    background-color: #FAF5FF;
+    margin: 6px 0;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.fc-event:hover {
+    background-color: #f3e9fc !important;  /* violet très pâle */
+}
+
+.fc-event-title {
+    font-weight: bold;
+    color: var(--text-dark);
+}
+
+.course-block {
+    font-size: 1rem;
+    padding: 6px;
+    color: var(--text-dark);
+}
+
+.badge-level {
+    color: white;
+    font-weight: bold;
+    padding: 5px 8px;
+    border-radius: 999px;
+    font-size: 0.9rem;
+}
+
+.fc-list-event-dot {
+    display: none !important;
+}
+
+.fc-list-event:hover td {
+  background-color: #f3e9fc !important;  /* violet très pâle */
+}
+.fc-list-event td {
+  transition: background-color 0.2s ease;
+}
+
+.fc-list-day-cushion {
+    justify-content: start !important;
+    padding-left: 1rem !important;
+}
+
+.fc-list-day-text,
+.fc-list-day-side-text {
+    color: var(--text-dark) !important;
+    font-weight: 600;
+    font-size: 1.1rem;
+    text-transform: capitalize;
+}
+
+.fc-list-day-side-text {
+    display: none !important;
+}
+
+.fc-list-event-time {
+    color: var(--text-dark) !important;
+    font-weight: 500;
+}
+
+.fc-dayGridMonth-button{
+    margin-right: 10px !important;
+}
+
+.course-block.list-view {
+    padding: 0.5rem 0.5rem 0.5rem 1rem;
+    border-radius: 0.3rem;
+    background-color: #FAF5FF;
+    font-size: 1rem;
+    margin: 4px 0;
+}
+
+.fc-list-event-graphic{
+    width: 0;
+}
+
+.fc-list-day > td a {
+    text-decoration: none !important;
+    font-weight: 500;
+}
+
+.btn-yellow {
+    background-color: var(--gold);  /* Jaune principal */
+    color: #000;
+    border: 2px solid var(--gold);
+    transition: all 0.3s ease;
+}
+
+.btn-yellow:hover {
+    background-color: transparent;
+    color: var(--gold);
+    border: 2px solid var(--gold);
+}
+
+.bg-purple {
+    background-color: var(--main-purple);
+}
+
+.text-purple {
+    color: var(--main-purple);
+}

@@ -7,12 +7,23 @@
     <h3>Professeurs</h3>
     <ul class="list-group mb-3">
         {% for prof in teachers %}
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                {{ prof.first_name }} {{ prof.last_name }}
-                <span>
-                    <a href="{{ url_for('teachers.edit_teacher', id=prof.id) }}" class="btn btn-sm btn-outline-success me-2">Éditer</a>
-                    <a href="{{ url_for('teachers.delete_teacher', id=prof.id) }}" class="btn btn-sm btn-outline-danger">Supprimer</a>
-                </span>
+            <li class="list-group-item">
+            <form action="{{ url_for('teachers.edit_teacher', id=prof.id) }}" method="POST" class="row g-2 align-items-end">
+                <div class="col-md-2">
+                    <input type="text" name="first_name" value="{{ prof.first_name }}" class="form-control" required>
+                </div>
+                <div class="col-md-2">
+                    <input type="text" name="last_name" value="{{ prof.last_name }}" class="form-control" required>
+                </div>
+                <div class="col-md-3">
+                    <input type="email" name="email" value="{{ prof.email }}" class="form-control" required>
+                </div>
+                <div class="col text-end">
+                    <button type="submit" class="btn btn-success me-2">Modifier</button>
+                    <a href="{{ url_for('teachers.delete_teacher', id=prof.id) }}" class="btn btn-outline-danger">Supprimer</a>
+                </div>
+
+            </form>
             </li>
         {% endfor %}
     </ul>
@@ -41,22 +52,31 @@
     <h3>Niveaux</h3>
     <ul class="list-group mb-3">
         {% for level in levels %}
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                {{ level.name }}
-                <span>
-                    <a href="{{ url_for('level.edit_level', id=level.id) }}" class="btn btn-sm btn-outline-success me-2">Éditer</a>
-                    <a href="{{ url_for('level.delete_level', id=level.id) }}" class="btn btn-sm btn-outline-danger">Supprimer</a>
-                </span>
+            <li class="list-group-item">
+            <form action="{{ url_for('level.edit_level', id=level.id) }}" method="POST" class="row g-2 align-items-end">
+                <div class="col-md-3">
+                    <input type="text" name="name" value="{{ level.name }}" class="form-control" required>
+                </div>
+                <div class="col-md-3">
+                    <input type="color" name="color" value="{{ level.color }}" class="form-control" required style="width: 60px;">
+                </div>
+                <div class="col text-end">
+                    <button type="submit" class="btn btn-success me-2">Modifier</button>
+                    <a href="{{ url_for('level.delete_level', id=level.id) }}" class="btn btn-outline-danger">Supprimer</a>
+                </div>
+
+            </form>
             </li>
         {% endfor %}
     </ul>
+
 
     <form action="{{ url_for('level.add_level') }}" method="POST" class="row g-2">
         <div class="col-md-2">
             <input type="text" name="name" class="form-control" placeholder="Nom du niveau" required>
         </div>
         <div class="col-md-2">
-            <input type="color" name="color" class="form-control" placeholder="Couleur du niveau" required>
+            <input type="color" name="color" class="form-control" placeholder="Couleur du niveau" required style="width: 60px;">
         </div>
         <div class="col-md-2">
             <button type="submit" class="btn btn-success">Ajouter</button>
@@ -69,12 +89,17 @@
     <h3>Salles</h3>
     <ul class="list-group mb-3">
         {% for room in rooms %}
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                {{ room.name }}
-                <span>
-                    <a href="{{ url_for('room.edit_room', id=room.id) }}" class="btn btn-sm btn-outline-success me-2">Éditer</a>
-                    <a href="{{ url_for('room.delete_room', id=room.id) }}" class="btn btn-sm btn-outline-danger">Supprimer</a>
-                </span>
+            <li class="list-group-item">
+            <form action="{{ url_for('room.edit_room', id=room.id) }}" method="POST" class="row g-2 align-items-end">
+                <div class="col-md-4">
+                    <input type="text" name="name" value="{{ room.name }}" class="form-control" required>
+                </div>
+                <div class="col text-end">
+                    <button type="submit" class="btn btn-success me-2">Modifier</button>
+                    <a href="{{ url_for('room.delete_room', id=room.id) }}" class="btn btn-outline-danger">Supprimer</a>
+                </div>
+
+            </form>
             </li>
         {% endfor %}
     </ul>
@@ -94,36 +119,36 @@
                 <div class="mb-2">
                     <strong>{{ ct.name }}</strong> ({{ ct.duration }} min - {{ ct.credit }} crédits - {{ ct.places }} places)
                 </div>
-                <form action="{{ url_for('course_type.edit_course_type', id=ct.id) }}" method="POST" class="row g-2 mb-2">
+                <form action="{{ url_for('course_type.edit_course_type', id=ct.id) }}" method="POST" class="row g-2 align-items-end">
                     <div class="col-md-2">
                         <input type="text" name="name" value="{{ ct.name }}" class="form-control" required>
                     </div>
                     <div class="col-md-3">
                         <input type="text" name="description" value="{{ ct.description }}" class="form-control" required>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-auto">
                         <input type="number" name="duration" value="{{ ct.duration }}" class="form-control" min="0" required>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-auto">
                         <input type="number" name="credit" value="{{ ct.credit }}" class="form-control" min="0" required>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-auto">
                         <input type="number" name="places" value="{{ ct.places }}" class="form-control" min="0" required>
                     </div>
-                    <div class="col-md-2">
-                        <input type="color" name="color" value="{{ ct.color }}" class="form-control" required>
+                    <div class="col-auto">
+                        <input type="color" name="color" value="{{ ct.color }}" class="form-control" required style="width: 60px;">
                     </div>
-                    <div class="col-md-1">
-                        <button type="submit" class="btn btn-success w-100">Modifier</button>
+                    <div class="col text-end">
+                        <button type="submit" class="btn btn-success me-2">Modifier</button>
+                        <a href="{{ url_for('course_type.delete_course_type', id=ct.id) }}" class="btn btn-outline-danger">Supprimer</a>
                     </div>
                 </form>
-                <a href="{{ url_for('course_type.delete_course_type', id=ct.id) }}" class="btn btn-sm btn-outline-danger">Supprimer</a>
             </li>
         {% endfor %}
     </ul>
 
     <h4 class="mt-4">Ajouter un type de cours</h4>
-    <form action="{{ url_for('course_type.add_course_type') }}" method="POST" class="row g-2">
+    <form action="{{ url_for('course_type.add_course_type') }}" method="POST" class="row g-2 align-items-end">
         <div class="col-md-2">
             <input type="text" name="name" class="form-control" placeholder="Nom" required>
         </div>
@@ -133,14 +158,14 @@
         <div class="col-md-2">
             <input type="number" name="duration" class="form-control" placeholder="Durée (min)" min="0" required>
         </div>
-        <div class="col-md-2">
+        <div class="col-auto">
             <input type="number" name="credit" class="form-control" placeholder="Crédits" min="0" required>
         </div>
-        <div class="col-md-2">
+        <div class="col-auto">
             <input type="number" name="places" class="form-control" placeholder="Places" min="0" required>
         </div>
           <div class="col-md-2">
-            <input type="color" name="color" class="form-control" placeholder="Couleur" min="0" required>
+            <input type="color" name="color" class="form-control" placeholder="Couleur" min="0" required style="width: 60px;">
         </div>
         <div class="col-md-1">
             <button type="submit" class="btn btn-success w-100">Ajouter</button>
