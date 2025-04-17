@@ -1,0 +1,62 @@
+{% extends "partials/base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Liste des élèves</h2>
+        <a href="{{ url_for('students.form_students') }}" class="btn btn-yellow">Ajouter un.e élève</a>
+    </div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Crédits</th>
+                <th>Abonnement actif</th>
+                <th>Limite / semaine</th>
+                <th>Période</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in students %}
+                <tr>
+                    <td>{{ student.name }}</td>
+                    <td>{{ student.credit_balance }}</td>
+                    {% set active_subs = student.subscriptions | selectattr("is_active_now") | list %}
+                    {% if active_subs %}
+                        <td class="text-success fw-bold">Oui</td>
+                        <td>{{ active_subs[0].weekly_limit }} cours</td>
+                        <td>{{ active_subs[0].start_date.strftime('%d/%m/%Y') }} → {{ active_subs[0].end_date.strftime('%d/%m/%Y') }}</td>
+                    {% else %}
+                        <td class="text-danger">Non</td>
+                        <td>—</td>
+                        <td>—</td>
+                    {% endif %}
+                    <td>
+                        <button class="btn btn-outline-success btn-sm view-details-btn" data-student-id="{{ student.id }}">
+                            Voir détails
+                        </button>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Modale de détails élève -->
+<div class="modal fade" id="studentModal" tabindex="-1" aria-labelledby="studentModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="studentModalLabel">Détails de l'élève</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body">
+        <div id="studentModalContent">Chargement...</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/students.js') }}"></script>
+
+{% endblock %}
