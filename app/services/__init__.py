@@ -1,1 +1,1 @@
-from .course_manager import CourseManager
+from app.services.facade.course_manager import CourseManager
