@@ -2,7 +2,7 @@ import pytest
 from app.models import Student
 from app.repositories.student_repository import StudentRepository
 
-def test_create_student_and_get_all(app):
+def test_create_student_and_get_all(session):
     """
     Test d'intégration : StudentRepository.create + get_all
     Scénario :
@@ -11,6 +11,9 @@ def test_create_student_and_get_all(app):
     Résultat attendu :
         - L’étudiant est retrouvé
     """
+    # Nettoyage de la table CourseType
+    session.query(Student).delete()
+    session.commit()
     student = Student(name="Lucine", email="lucine@example.com")
     StudentRepository.create(student)
 

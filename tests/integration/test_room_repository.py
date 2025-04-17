@@ -2,7 +2,7 @@ import pytest
 from app.models import Room
 from app.repositories.room_repository import RoomRepository
 
-def test_create_room_and_get_all(app):
+def test_create_room_and_get_all(session):
     """
     Test d'intégration : RoomRepository.create + get_all
     Scénario :
@@ -11,6 +11,9 @@ def test_create_room_and_get_all(app):
     Résultat attendu :
         - La salle est présente dans la liste retournée
     """
+    # Nettoyage de la table CourseType
+    session.query(Room).delete()
+    session.commit()
     room = Room(name="Studio Alpha")
     RoomRepository.create(room)
 

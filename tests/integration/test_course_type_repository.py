@@ -2,7 +2,7 @@ import pytest
 from app.models import CourseType
 from app.repositories.course_type_repository import CourseTypeRepository
 
-def test_create_course_type_and_get_all(app):
+def test_create_course_type_and_get_all(session):
     """
     Test d'intégration : CourseTypeRepository.create + get_all
     Scénario :
@@ -11,6 +11,9 @@ def test_create_course_type_and_get_all(app):
     Résultat attendu :
         - Le type de cours est présent dans la liste retournée
     """
+    # Nettoyage de la table CourseType
+    session.query(CourseType).delete()
+    session.commit()
     ct = CourseType(
         name="Exotic",
         description="Style fluide et sensuel",

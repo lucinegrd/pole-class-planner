@@ -2,7 +2,7 @@ import pytest
 from app.models import Teacher
 from app.repositories.teacher_repository import TeacherRepository
 
-def test_create_teacher_and_get_all(app):
+def test_create_teacher_and_get_all(session):
     """
     Test d'intégration : TeacherRepository.create + get_all
     Scénario :
@@ -11,6 +11,9 @@ def test_create_teacher_and_get_all(app):
     Résultat attendu :
         - L'enseignant est présent dans la liste retournée
     """
+    # Nettoyage de la table CourseType
+    session.query(Teacher).delete()
+    session.commit()
     teacher = Teacher(
         first_name="Lucine",
         last_name="Giraud",

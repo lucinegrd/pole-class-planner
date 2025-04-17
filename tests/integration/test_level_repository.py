@@ -1,7 +1,7 @@
 from app.models import Level
 from app.repositories.level_repository import LevelRepository
 
-def test_create_level_and_get_all(app):
+def test_create_level_and_get_all(session):
     """
     Test d'intégration : LevelRepository.create + get_all
     Scénario :
@@ -10,6 +10,10 @@ def test_create_level_and_get_all(app):
     Résultat attendu :
         - Le niveau est présent dans la liste retournée
     """
+    # Nettoyage de la table Level
+    session.query(Level).delete()
+    session.commit()
+
     level = Level(name="Débutant", color="green")
     LevelRepository.create(level)
 
