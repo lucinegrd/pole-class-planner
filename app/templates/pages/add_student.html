@@ -1,16 +1,21 @@
 {% extends "partials/base.html" %}
-
 {% block content %}
-<h2>Ajouter un élève</h2>
-<form action="/add_student_form" method="POST">
-    <label>Nom:</label>
-    <input type="text" name="name" required>
-    <br>
-    <label>Email:</label>
-    <input type="email" name="email" required>
-    <br>
-    <button type="submit">Ajouter</button>
-</form>
-
+<div class="container mt-5">
+    <h2>Ajouter un élève</h2>
+    <form action="{{ url_for('students.add_student') }}" method="POST">
+        <div class="mb-3">
+            <label for="name" class="form-label">Nom</label>
+            <input type="text" class="form-control" name="name" required>
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Adresse email</label>
+            <input type="email" class="form-control" name="email" required>
+        </div>
+        <div class="mb-3">
+            <label for="credit_balance" class="form-label">Crédits (optionnel)</label>
+            <input type="number" class="form-control" name="credit_balance" min="0" value="0">
+        </div>
+        <button type="submit" class="btn btn-yellow">Ajouter</button>
+    </form>
+</div>
 {% endblock %}
-
