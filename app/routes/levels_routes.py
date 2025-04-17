@@ -7,10 +7,12 @@ from app.repositories import LevelRepository
 from app.services.singletons.logger_singleton import Logger
 
 level_bp = Blueprint("level", __name__)
+"""Blueprint pour la gestion des niveaux."""
 
 @level_bp.route("/studio/level/add", methods=["POST"])
 @login_required
 def add_level():
+    """Ajoute un nouveau niveau."""
     name = request.form.get("name")
     if not name:
         print("Nom requis.", "error")
@@ -27,6 +29,7 @@ def add_level():
 @level_bp.route("/studio/level/delete/<int:id>")
 @login_required
 def delete_level(id):
+    """Supprime un niveau existant."""
     level = LevelRepository.get_by_id(id)
     LevelRepository.delete(level)
     Logger().log("Niveau supprimé.")
@@ -35,6 +38,7 @@ def delete_level(id):
 @level_bp.route("/studio/level/edit/<int:id>", methods=["POST"])
 @login_required
 def edit_level(id):
+    """Modifie un niveau existant."""
     level = Level.query.get_or_404(id)
     level.name = request.form.get("name")
     db.session.commit()

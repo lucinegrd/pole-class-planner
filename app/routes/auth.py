@@ -7,9 +7,11 @@ from flask import abort
 from flask_login import current_user
 
 auth_bp = Blueprint('auth', __name__)
+"""Blueprint pour la gestion de l'authentification."""
 
 @auth_bp.route("/login", methods=["GET", "POST"])
 def login():
+    """Gère la connexion des utilisateurs."""
     if request.method == "POST":
         email = request.form["email"]
         password = request.form["password"]
@@ -27,15 +29,15 @@ def login():
 @auth_bp.route("/logout")
 @login_required
 def logout():
+    """Déconnecte l'utilisateur actuellement connecté."""
     logout_user()
     return redirect(url_for("auth.login"))
 
-
 def admin_required(f):
+    """Décorateur pour restreindre l'accès aux administrateurs."""
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if not current_user.is_authenticated or not current_user.is_admin:
             abort(403)
         return f(*args, **kwargs)
     return decorated_function
-

@@ -12,19 +12,21 @@ from app.services.singletons.logger_singleton import Logger
 from app.services.strategies.strategy_base import StudentStrategy
 
 main_bp = Blueprint("main", __name__)
+"""Blueprint principal pour la page d'accueil, le studio et la gestion des alertes."""
 
 @main_bp.route("/")
 @login_required
 def home():
+    """Affiche la page d'accueil avec les alertes et les prochains cours."""
     alerts = AlertManager().get_alerts()
     today = datetime.now()
     next_courses = CourseRepository.get_upcoming_courses(today=today, limit=5)
     return render_template("pages/home.html", alerts=alerts, next_courses=next_courses)
 
-
 @main_bp.route("/studio", methods=["GET"])
 @admin_required
 def studio():
+    """Affiche la page d'administration (studio) avec la gestion des entités."""
     teachers = TeacherRepository.get_all()
     levels = LevelRepository.get_all()
     rooms = RoomRepository.get_all()
@@ -40,13 +42,14 @@ def studio():
 @login_required
 @admin_required
 def show_logs():
+    """Affiche les journaux (logs) de l'application."""
     logger = Logger()
     return render_template("pages/logs.html", logs=logger.get_logs())
-
 
 @main_bp.route("/alerts/<int:alert_id>/action", methods=["POST"])
 @login_required
 def handle_alert_action(alert_id):
+    """Traite une action effectuée sur une alerte."""
     data = request.get_json()
     action = data.get("action")
 

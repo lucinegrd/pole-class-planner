@@ -12,11 +12,13 @@ from app.services.singletons.logger_singleton import Logger
 from ..services.singletons.alert_manager_singleton import AlertManager
 
 students_bp = Blueprint("students", __name__)
+"""Blueprint pour la gestion des étudiants."""
 
 @students_bp.route("/students")
 @login_required
 @admin_required
 def list_students():
+    """Affiche la liste des étudiants."""
     students = StudentRepository.get_all()
     return render_template("pages/students.html", students=students)
 
@@ -24,12 +26,14 @@ def list_students():
 @login_required
 @admin_required
 def form_students():
+    """Affiche le formulaire d'ajout d'un étudiant."""
     return render_template("pages/add_student.html")
 
 @students_bp.route("/students/add", methods=["POST"])
 @login_required
 @admin_required
 def add_student():
+    """Ajoute un nouvel étudiant."""
     name = request.form["name"]
     email = request.form["email"]
     credit_balance = request.form.get("credit_balance", 0)
@@ -49,6 +53,7 @@ def add_student():
 @login_required
 @admin_required
 def get_student_details(id):
+    """Renvoie les détails d'un étudiant sous forme de JSON."""
     student = StudentRepository.get_by_id(id)
     if not student:
         return {"error": "Introuvable"}, 404
@@ -81,6 +86,7 @@ def get_student_details(id):
 @login_required
 @admin_required
 def add_credits(id):
+    """Ajoute des crédits à un étudiant."""
     student = StudentRepository.get_by_id(id)
     data = request.get_json()
     student.credit_balance += int(data["amount"])
@@ -94,6 +100,7 @@ def add_credits(id):
 @login_required
 @admin_required
 def add_subscription(id):
+    """Ajoute un abonnement à un étudiant."""
     data = request.get_json()
     student = StudentRepository.get_by_id(id)
     start_date = datetime.strptime(data["start_date"], "%Y-%m-%d")
@@ -115,6 +122,7 @@ def add_subscription(id):
 @students_bp.route("/students/search")
 @login_required
 def search_students():
+    """Recherche des étudiants par nom ou email."""
     q = request.args.get("q", "")
     students = Student.query.filter(
         (Student.name.ilike(f"%{q}%")) | (Student.email.ilike(f"%{q}%"))
@@ -124,8 +132,8 @@ def search_students():
         {"id": s.id, "name": f"{s.name} {s.email}"} for s in students
     ])
 
-
 def reevaluate_non_validated_courses(student):
+    """Réévalue les inscriptions non validées d'un étudiant."""
     for registration in student.registrations:
         if registration.state == "Non validé":
             RegistrationState.get_state_instance(registration).validate(registration)

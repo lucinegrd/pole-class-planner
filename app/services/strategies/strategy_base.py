@@ -1,13 +1,22 @@
 class StudentStrategy:
+    """Classe de base pour définir une stratégie de validation d'inscription selon le type d'accès d'un étudiant."""
+
     def can_validate(self, registration) -> bool:
+        """Vérifie si l'inscription peut être validée selon la stratégie."""
         raise NotImplementedError()
 
     def apply(self, registration):
-        """Applique la validation : ex. soustraire un crédit"""
+        """Applique la validation (exemple : soustraire un crédit)."""
         raise NotImplementedError()
 
     @staticmethod
     def get_student_credit_strategy(student):
+        """
+        Retourne la stratégie adaptée à l'étudiant :
+        - Abonnement actif → MonthlySubscriptionStrategy
+        - Crédit disponible → CreditPackStrategy
+        - Sinon → NoAccessStrategy
+        """
         from .credit_pack_strategy import CreditPackStrategy
         from .no_access_strategy import NoAccessStrategy
         from .monthly_subscription_strategy import MonthlySubscriptionStrategy
@@ -17,4 +26,3 @@ class StudentStrategy:
             return CreditPackStrategy()
         else:
             return NoAccessStrategy()
-

@@ -7,11 +7,12 @@ from app.repositories import CourseTypeRepository
 from app.services.singletons.logger_singleton import Logger
 
 course_type_bp = Blueprint("course_type", __name__)
-
+"""Blueprint pour la gestion des types de cours."""
 
 @course_type_bp.route("/studio/course_type/add", methods=["POST"])
 @login_required
 def add_course_type():
+    """Ajoute un nouveau type de cours."""
     name = request.form.get("name")
     description = request.form.get("description")
     duration = request.form.get("duration")
@@ -36,6 +37,7 @@ def add_course_type():
 @course_type_bp.route("/studio/course_type/delete/<int:id>")
 @login_required
 def delete_course_type(id):
+    """Supprime un type de cours."""
     course_type = CourseTypeRepository.get_by_id(id)
     CourseTypeRepository.delete(course_type)
     Logger().log("Type de cours supprimé.")
@@ -44,6 +46,7 @@ def delete_course_type(id):
 @course_type_bp.route("/studio/course_type/edit/<int:id>", methods=["POST"])
 @login_required
 def edit_course_type(id):
+    """Modifie un type de cours existant."""
     ct = CourseTypeRepository.get_by_id(id)
     ct.name = request.form.get("name")
     ct.description = request.form.get("description")

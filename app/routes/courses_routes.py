@@ -1,19 +1,17 @@
-
 from flask import Blueprint, request, jsonify, render_template, redirect, url_for
 from flask_login import login_required
 from app.repositories import CourseRepository, TeacherRepository, RoomRepository, LevelRepository, CourseTypeRepository, \
     StudentRepository
-from app.repositories.registration_repository import RegistrationRepository
 from app.services import CourseManager
 from app.services.singletons.logger_singleton import Logger
-from app.services.states.registration_state_base import RegistrationState
 
 courses_bp = Blueprint("courses", __name__)
+"""Blueprint pour la gestion des routes liées aux cours."""
 
 @courses_bp.route("/courses", methods=["GET"])
 @login_required
 def get_courses():
-
+    """Affiche tous les cours dans le calendrier."""
     all_courses = CourseRepository.get_all()
     events = [
         {
@@ -25,19 +23,18 @@ def get_courses():
                 "level": course.level.name,
                 "places": course.places,
                 "duration": course.course_type.duration,
-                "color":course.course_type.color,
-                "colorLevel":course.level.color,
+                "color": course.course_type.color,
+                "colorLevel": course.level.color,
             }
         }
         for course in all_courses
     ]
     return render_template('pages/calendar.html', events=events)
 
-
 @courses_bp.route("/courses/form", methods=["POST", "GET"])
 @login_required
 def add_courses():
-
+    """Affiche le formulaire d'ajout de cours ou traite la soumission du formulaire."""
     if request.method == "GET":
         teachers = TeacherRepository.get_all()
         rooms = RoomRepository.get_all()
@@ -79,10 +76,10 @@ def add_courses():
 
     return redirect(url_for("courses.add_courses"))
 
-
 @courses_bp.route("/courses/<int:id>")
 @login_required
 def get_course_details(id):
+    """Renvoie les détails d'un cours au format JSON."""
     course = CourseRepository.get_by_id(id)
     if not course:
         return {"error": "Cours introuvable"}, 404
@@ -114,19 +111,21 @@ def get_course_details(id):
 @courses_bp.route("/courses/<int:id>/detail")
 @login_required
 def course_detail(id):
+    """Affiche la page de détail d'un cours."""
     course = CourseRepository.get_by_id(id)
     return render_template("pages/course_detail.html", course=course)
-
 
 @courses_bp.route("/courses/<int:course_id>/<int:student_id>/confirm", methods=["POST"])
 @login_required
 def confirm_presence(course_id, student_id):
+    """Confirme la présence d'un élève à un cours."""
     registration = CourseManager.confirm_presence(course_id, student_id)
     return jsonify(success=True, new_state=registration.state)
 
 @courses_bp.route("/courses/<int:course_id>/<int:student_id>/add", methods=['POST'])
 @login_required
 def add_student_to_course(course_id, student_id):
+    """Ajoute un élève à un cours."""
     course = CourseRepository.get_by_id(course_id)
     student = StudentRepository.get_by_id(student_id)
 

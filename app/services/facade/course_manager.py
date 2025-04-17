@@ -1,31 +1,32 @@
 from app.models import Course, CourseType, Registration
 from app.repositories.course_repository import CourseRepository
 from app.repositories.course_type_repository import CourseTypeRepository
-from app.repositories.level_repository import LevelRepository
 from app.repositories.registration_repository import RegistrationRepository
-from app.repositories.room_repository import RoomRepository
-from app.repositories.teacher_repository import TeacherRepository
 from datetime import datetime
 
 from app.services.states.registration_state_base import RegistrationState
 
 
 class CourseManager:
+    """Service pour gérer les opérations sur les cours."""
+
     @staticmethod
     def get_course_by_id(course_id):
-        """Récupère un cours en utilisant le repository"""
+        """Récupère un cours par son identifiant."""
         return CourseRepository.get_by_id(course_id)
 
     @staticmethod
     def get_all_courses():
-        """Récupère tous les cours"""
+        """Récupère tous les cours."""
         return CourseRepository.get_all()
 
     @staticmethod
     def create_from_form(form):
         """
-        form_data : un formulaire
-        Attend les clés : teacher_id, level_id, date, room_id, course_type_id
+        Crée un nouveau cours à partir d'un formulaire.
+
+        Paramètre attendu :
+        - teacher_id, level_id, date, room_id, course_type_id, ou champs personnalisés si 'autre' est choisi.
         """
         if form.get("course_type") == "autre":
             new_type = CourseType(
@@ -34,7 +35,7 @@ class CourseManager:
                 duration=int(form.get("custom_duration")),
                 credit=int(form.get("custom_credit")),
                 places=int(form.get("custom_places")),
-                color = form.get("custom_color")
+                color=form.get("custom_color")
             )
             CourseTypeRepository.create(new_type)
             course_type_id = new_type.id
@@ -57,6 +58,7 @@ class CourseManager:
 
     @staticmethod
     def get_filtered_courses(filters: dict):
+        """Filtre les cours selon les critères donnés."""
         return CourseRepository.get_filtered(
             level_name=filters.get("level"),
             course_type_name=filters.get("type"),
@@ -66,6 +68,7 @@ class CourseManager:
 
     @staticmethod
     def add_student(course, student):
+        """Ajoute un élève à un cours en vérifiant la disponibilité."""
         existing = RegistrationRepository.get_by_course_and_student(course_id=course.id, student_id=student.id)
         if existing:
             raise ValueError("Élève déjà inscrit à ce cours.")
@@ -80,6 +83,7 @@ class CourseManager:
 
     @staticmethod
     def confirm_presence(course_id, student_id):
+        """Confirme la présence d'un élève à un cours."""
         registration = RegistrationRepository.get_by_course_and_student(course_id, student_id)
         state = RegistrationState.get_state_instance(registration)
         state.complete(registration)

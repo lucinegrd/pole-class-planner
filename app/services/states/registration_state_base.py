@@ -1,17 +1,22 @@
-
 class RegistrationState:
+    """Classe de base pour représenter l'état d'une inscription."""
+
     def validate(self, registration):
+        """Valide une inscription (méthode à implémenter dans les sous-classes)."""
         raise NotImplementedError()
 
     def complete(self, registration):
+        """Marque une inscription comme confirmée (méthode à implémenter dans les sous-classes)."""
         raise NotImplementedError()
 
     def cancel(self, registration):
+        """Annule une inscription (méthode à implémenter dans les sous-classes)."""
         raise NotImplementedError()
 
     @staticmethod
     def get_state_instance(registration):
-        # éviter les imports circulaires
+        """ Retourne une instance de l'état correspondant à l'inscription.
+        """
         from .asked import AskedState
         from .validated import ValidatedState
         from .complete import CompleteState
@@ -25,4 +30,3 @@ class RegistrationState:
             "Sur liste d'attente": WaitingListState()
         }
         return state_map.get(registration.state)
-
