@@ -18,8 +18,8 @@ def add_course_type():
     duration = request.form.get("duration")
     credit = request.form.get("credit")
     places = request.form.get("places")
-
-    if not all([name, description, duration, credit, places]):
+    color = request.form.get("color")
+    if not all([name, description, duration, credit, places, color]):
         print("Tous les champs sont requis.", "error")
         return redirect(url_for("main.studio"))
 
@@ -28,7 +28,8 @@ def add_course_type():
         description=description,
         duration=int(duration),
         credit=int(credit),
-        places=int(places)
+        places=int(places),
+        color=color,
     )
     CourseTypeRepository.create(course_type)
     Logger().log("Type de cours ajouté.")
