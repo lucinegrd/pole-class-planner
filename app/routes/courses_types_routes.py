@@ -1,9 +1,10 @@
 from flask import Blueprint, request, redirect, url_for
-from flask_login import login_required, current_user
+from flask_login import login_required
 
 from app import db
 from app.models import CourseType
 from app.repositories import CourseTypeRepository
+from app.services.singletons.logger_singleton import Logger
 
 course_type_bp = Blueprint("course_type", __name__)
 
@@ -29,7 +30,7 @@ def add_course_type():
         places=int(places)
     )
     CourseTypeRepository.create(course_type)
-    print("Type de cours ajouté.", "success")
+    Logger().log("Type de cours ajouté.")
     return redirect(url_for("main.studio"))
 
 @course_type_bp.route("/studio/course_type/delete/<int:id>")
@@ -37,7 +38,7 @@ def add_course_type():
 def delete_course_type(id):
     course_type = CourseTypeRepository.get_by_id(id)
     CourseTypeRepository.delete(course_type)
-    print("Type de cours supprimé.", "success")
+    Logger().log("Type de cours supprimé.")
     return redirect(url_for("main.studio"))
 
 @course_type_bp.route("/studio/course_type/edit/<int:id>", methods=["POST"])
@@ -51,5 +52,5 @@ def edit_course_type(id):
     ct.places = int(request.form.get("places"))
     ct.color = request.form.get("color")
     db.session.commit()
-    print("Type de cours modifié.", "success")
+    Logger().log("Type de cours modifié.")
     return redirect(url_for("main.studio"))

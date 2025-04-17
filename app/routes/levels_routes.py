@@ -1,9 +1,10 @@
 from flask import Blueprint, request, redirect, url_for
-from flask_login import login_required, current_user
+from flask_login import login_required
 
 from app import db
 from app.models import Level
 from app.repositories import LevelRepository
+from app.services.singletons.logger_singleton import Logger
 
 level_bp = Blueprint("level", __name__)
 
@@ -20,7 +21,7 @@ def add_level():
         return redirect(url_for("main.studio"))
     level = Level(name=name, color=color)
     LevelRepository.create(level)
-    print("Niveau ajouté.", "success")
+    Logger().log("Niveau ajouté.")
     return redirect(url_for("main.studio"))
 
 @level_bp.route("/studio/level/delete/<int:id>")
@@ -28,7 +29,7 @@ def add_level():
 def delete_level(id):
     level = LevelRepository.get_by_id(id)
     LevelRepository.delete(level)
-    print("Niveau supprimé.", "success")
+    Logger().log("Niveau supprimé.")
     return redirect(url_for("main.studio"))
 
 @level_bp.route("/studio/level/edit/<int:id>", methods=["POST"])
@@ -37,5 +38,5 @@ def edit_level(id):
     level = Level.query.get_or_404(id)
     level.name = request.form.get("name")
     db.session.commit()
-    print("Niveau modifié.", "success")
+    Logger().log("Niveau modifié.")
     return redirect(url_for("main.studio"))

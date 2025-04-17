@@ -1,9 +1,10 @@
 from flask import Blueprint, request, redirect, url_for
-from flask_login import login_required, current_user
+from flask_login import login_required
 
 from app import db
 from app.models import Room
 from app.repositories import RoomRepository
+from app.services.singletons.logger_singleton import Logger
 
 room_bp = Blueprint("room", __name__)
 
@@ -16,7 +17,7 @@ def add_room():
         return redirect(url_for("main.studio"))
     room = Room(name=name)
     RoomRepository.create(room)
-    print("Salle ajoutée.", "success")
+    Logger().log("Salle ajoutée.")
     return redirect(url_for("main.studio"))
 
 @room_bp.route("/studio/room/delete/<int:id>")
@@ -24,7 +25,7 @@ def add_room():
 def delete_room(id):
     room = RoomRepository.get_by_id(id)
     RoomRepository.delete(room)
-    print("Salle supprimée.", "success")
+    Logger().log("Salle supprimée.")
     return redirect(url_for("main.studio"))
 
 @room_bp.route("/studio/room/edit/<int:id>", methods=["POST"])
@@ -33,5 +34,5 @@ def edit_room(id):
     room = RoomRepository.get_by_id(id)
     room.name = request.form.get("name")
     db.session.commit()
-    print("Salle modifiée.", "success")
+    Logger().log("Salle modifiée.")
     return redirect(url_for("main.studio"))
