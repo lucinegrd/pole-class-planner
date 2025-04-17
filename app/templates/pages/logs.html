@@ -1,0 +1,18 @@
+{% extends "partials/base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Journal des actions</h2>
+    {% if logs %}
+        <ul class="list-group">
+            {% for log in logs|reverse %}
+                <li class="list-group-item">
+                    <span class="text-muted">{{ log.timestamp }}</span>
+                    — {{ log.message }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Aucune entrée de log pour le moment.</p>
+    {% endif %}
+</div>
+{% endblock %}
