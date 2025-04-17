@@ -43,7 +43,7 @@ def sample_course():
     - un type de cours avec 3 places
     - une date fixe
     """
-    teacher = Teacher(first_name="Anna", last_name="Smith", email="anna@example.com", password_hash="hashed")
+    teacher = Teacher(first_name="Anna", last_name="Smith", email="anna@example.com", password_hash="hashed", is_admin=False)
     level = Level(name="Débutant", color="125643")
     room = Room(name="Studio A")
     course_type = CourseType(
@@ -66,7 +66,7 @@ def sample_course():
 @pytest.fixture
 def setup_base_entities(session):
     """Crée les entités nécessaires en BDD pour tous les tests"""
-    teacher = Teacher(first_name="Paul", last_name="Prof", email="paul@example.com", password_hash=generate_password_hash("pass"), role="prof")
+    teacher = Teacher(first_name="Paul", last_name="Prof", email="paul@example.com", password_hash=generate_password_hash("pass"), is_admin=False)
     level = Level(name="Débutant", color="green")
     room = Room(name="Studio A")
     course_type = CourseType(name="Pole Flow", description="Flow fluide", duration=60, credit=1, places=2, color="#C9D4FF")
@@ -93,3 +93,20 @@ def form_data(setup_base_entities):
         "course_type": str(entities["course_type"].id)
     }
 
+
+@pytest.fixture
+def login_as_admin(client, session):
+    """
+    Fixture pour se connecter comme un admin pour les tests end-to-end
+    """
+    from app.models import Teacher
+    from werkzeug.security import generate_password_hash
+
+    admin = Teacher(first_name="Admin", last_name="User", email="admin@example.com", password_hash=generate_password_hash("adminpass"), is_admin=True)
+    session.add(admin)
+    session.commit()
+
+    client.post("/login", data={
+        "email": "admin@example.com",
+        "password": "adminpass"
+    }, follow_redirects=True)
