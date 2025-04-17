@@ -55,7 +55,7 @@
             <p>{{ alert.message }}</p>
             <div class="d-flex flex-wrap gap-2">
               {% for action in alert.actions %}
-                <button class="btn btn-sm btn-outline-primary alert-action-btn" data-action="{{ action }}" data-alert-id="{{ alert.id }}">
+                <button class="btn btn-sm btn-outline-success alert-action-btn" data-action="{{ action }}" data-alert-id="{{ alert.id }}">
                   {{ action.replace("_", " ").capitalize() }}
                 </button>
               {% endfor %}
