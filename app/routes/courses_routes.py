@@ -1,8 +1,12 @@
 
-from flask import Blueprint, request, jsonify, render_template, flash, redirect, url_for
-from flask_login import login_required, current_user
-from app.repositories import CourseRepository, TeacherRepository, RoomRepository, LevelRepository, CourseTypeRepository
+from flask import Blueprint, request, jsonify, render_template, redirect, url_for
+from flask_login import login_required
+from app.repositories import CourseRepository, TeacherRepository, RoomRepository, LevelRepository, CourseTypeRepository, \
+    StudentRepository
+from app.repositories.registration_repository import RegistrationRepository
 from app.services import CourseManager
+from app.services.singletons.logger_singleton import Logger
+from app.services.states.registration_state_base import RegistrationState
 
 courses_bp = Blueprint("courses", __name__)
 
@@ -69,8 +73,65 @@ def add_courses():
 
     try:
         CourseManager.create_from_form(form)
-        print("Cours ajouté avec succès !", "success")
+        Logger().log("Cours ajouté avec succès !")
     except Exception as e:
-        print(f"Erreur lors de la création du cours : {str(e)}")
+        Logger.log(f"Erreur lors de la création du cours : {str(e)}")
 
     return redirect(url_for("courses.add_courses"))
+
+
+@courses_bp.route("/courses/<int:id>")
+@login_required
+def get_course_details(id):
+    course = CourseRepository.get_by_id(id)
+    if not course:
+        return {"error": "Cours introuvable"}, 404
+
+    ct = course.course_type
+
+    return {
+        "id": course.id,
+        "type": ct.name,
+        "description": ct.description,
+        "duration": ct.duration,
+        "credit": ct.credit,
+        "places": ct.places,
+        "color": ct.color,
+        "level": course.level.name,
+        "date": course.date.strftime('%d/%m/%Y à %Hh%M'),
+        "teacher": f"{course.teacher.first_name} {course.teacher.last_name}",
+        "room": course.room.name,
+        "students": [
+            {
+                "name": reg.student.name,
+                "state": reg.state,
+                "student_id": reg.student.id
+            }
+            for reg in course.registrations
+        ]
+    }
+
+@courses_bp.route("/courses/<int:id>/detail")
+@login_required
+def course_detail(id):
+    course = CourseRepository.get_by_id(id)
+    return render_template("pages/course_detail.html", course=course)
+
+
+@courses_bp.route("/courses/<int:course_id>/<int:student_id>/confirm", methods=["POST"])
+@login_required
+def confirm_presence(course_id, student_id):
+    registration = CourseManager.confirm_presence(course_id, student_id)
+    return jsonify(success=True, new_state=registration.state)
+
+@courses_bp.route("/courses/<int:course_id>/<int:student_id>/add", methods=['POST'])
+@login_required
+def add_student_to_course(course_id, student_id):
+    course = CourseRepository.get_by_id(course_id)
+    student = StudentRepository.get_by_id(student_id)
+
+    try:
+        CourseManager.add_student(course, student)
+        return jsonify(success=True)
+    except ValueError as e:
+        return jsonify(success=False, message=str(e)), 400

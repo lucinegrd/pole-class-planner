@@ -1,44 +1,54 @@
 {% extends "partials/base.html" %}
 
 {% block content %}
-<div class="container-fluid my-5">
-    <h2 class="mb-4">Calendrier des cours</h2>
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-3" >
+        <h2 class="mb-0">Calendrier des cours</h2>
+        <a href="{{ url_for('courses.add_courses') }}" class="btn btn-yellow">
+            <i class="bi bi-plus-lg me-1"></i> Ajouter un cours
+        </a>
+    </div>
+
     <div id='calendar'></div>
 </div>
 
+<!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const calendarEl = document.getElementById('calendar');
-        const calendar = new FullCalendar.Calendar(calendarEl, {
-            locale: 'fr',
-            firstDay: 1,
-            initialView: window.innerWidth > 768 ? 'dayGridMonth' : 'listMonth',
-            headerToolbar: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'dayGridMonth,listMonth'
-            },
-            events: {{ events | tojson }},
-            eventClick: function (info) {
-                window.location.href = `/courses/${info.event.id}`;
-            },
-            eventContent: function (arg) {
-                let view = arg.view.type;
-                let teacher = arg.event.extendedProps.teacher;
-                let level = arg.event.extendedProps.level;
-                let places = arg.event.extendedProps.places;
-                let duration = arg.event.extendedProps.duration;
-                let startDate = arg.event.start;
-                let hours = startDate.getHours().toString().padStart(2, '0');
-                let minutes = startDate.getMinutes().toString().padStart(2, '0');
-                let time = `${hours}h${minutes}`;
-                let color = arg.event.extendedProps.color;
-                let colorLevel = arg.event.extendedProps.colorLevel;
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/locales-all.global.min.js"></script>
 
-                if (view === 'dayGridMonth') {
-                    return { html : `
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const calendarEl = document.getElementById('calendar');
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+        locale: 'fr',
+        firstDay: 1,
+        initialView: window.innerWidth > 768 ? 'dayGridMonth' : 'listMonth',
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,listMonth'
+        },
+        events: {{ events | tojson }},
+        eventClick: function (info) {
+            window.location.href = `/courses/${info.event.id}/detail`;
+        },
+        eventContent: function (arg) {
+            let view = arg.view.type;
+            let teacher = arg.event.extendedProps.teacher;
+            let level = arg.event.extendedProps.level;
+            let places = arg.event.extendedProps.places;
+            let duration = arg.event.extendedProps.duration;
+            let startDate = arg.event.start;
+            let hours = startDate.getHours().toString().padStart(2, '0');
+            let minutes = startDate.getMinutes().toString().padStart(2, '0');
+            let time = `${hours}h${minutes}`;
+            let color = arg.event.extendedProps.color;
+            let colorLevel = arg.event.extendedProps.colorLevel;
+
+            if (view === 'dayGridMonth') {
+                return {
+                    html : `
                         <div class="course-block" style="border-left: 5px solid ${color}">
                             <div class="d-flex justify-content-between mb-1">
                                 <span class="fw-bold">${time}</span>
@@ -51,10 +61,11 @@
                             </div>
                             <div class="fw-bold">${places} places</div>
                         </div>
-                    `}
-                } else if (view.startsWith('list')) {
-                    return {
-                        html: `
+                    `
+                }
+            } else if (view.startsWith('list')) {
+                return {
+                    html: `
                         <div class="course-block list-view d-flex ps-3" style="border-left: 5px solid ${color}"">
                             <div class="flex-grow-1">
                                 <div class="d-flex justify-content-between align-items-start">
@@ -66,24 +77,45 @@
                                     <i class="bi bi-clock ms-3 me-1"></i> ${duration} min
                                 </div>
                                 <div class="fw-bold">${places} places libres</div>
-                          </div>
+                            </div>
                         </div>
-                        `
-                    }
+                    `
                 }
-            },
-            buttonText: {
-                today:    "Aujourd’hui",
-                month:    "Calendrier",
-                list:     "Vue liste"
-            },
-            editable: false,
-            selectable: false
-        });
-        calendar.render();
+            }
+        },
+        buttonText: {
+            today: "Aujourd’hui",
+            month: "Calendrier",
+            list: "Vue liste"
+        },
+        editable: false,
+        selectable: false
     });
+    calendar.render();
+});
+
+document.addEventListener('click', function (e) {
+    if (e.target.classList.contains('confirm-btn')) {
+        const btn = e.target;
+        const courseId = btn.dataset.course;
+        const studentId = btn.dataset.student;
+
+        fetch(`/courses/${courseId}/${studentId}/confirm`, {
+            method: 'POST'
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                const badge = btn.parentElement.querySelector('.badge');
+                badge.textContent = data.new_state;
+                badge.classList.remove('bg-secondary');
+                badge.classList.add('bg-success');
+
+                btn.remove();
+            }
+        });
+    }
+});
+
 </script>
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/locales-all.global.min.js"></script>
-
-
 {% endblock %}
