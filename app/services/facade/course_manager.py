@@ -1,10 +1,14 @@
-from app.models import Course, CourseType
+from app.models import Course, CourseType, Registration
 from app.repositories.course_repository import CourseRepository
 from app.repositories.course_type_repository import CourseTypeRepository
 from app.repositories.level_repository import LevelRepository
+from app.repositories.registration_repository import RegistrationRepository
 from app.repositories.room_repository import RoomRepository
 from app.repositories.teacher_repository import TeacherRepository
 from datetime import datetime
+
+from app.services.states.registration_state_base import RegistrationState
+
 
 class CourseManager:
     @staticmethod
@@ -17,14 +21,12 @@ class CourseManager:
         """Récupère tous les cours"""
         return CourseRepository.get_all()
 
-
     @staticmethod
     def create_from_form(form):
         """
         form_data : un formulaire
         Attend les clés : teacher_id, level_id, date, room_id, course_type_id
         """
-        # Si le type est "autre", créer un nouveau CourseType
         if form.get("course_type") == "autre":
             new_type = CourseType(
                 name=form.get("custom_name"),
@@ -63,21 +65,22 @@ class CourseManager:
         )
 
     @staticmethod
-    def add_student_to_course(course_id, student):
-        """
-        Tente d'ajouter un étudiant à un cours.
-        """
-        course = CourseRepository.get_by_id(course_id)
-        if not course:
-            return "not_found"
+    def add_student(course, student):
+        existing = RegistrationRepository.get_by_course_and_student(course_id=course.id, student_id=student.id)
+        if existing:
+            raise ValueError("Élève déjà inscrit à ce cours.")
 
-        if student in course.students:
-            return "already_registered"
+        state = "Sur liste d'attente" if course.places <= 0 else "Non validé"
 
-        if CourseRepository.add_student(course, student):
-            return "added"
-        if CourseRepository.add_to_waiting_list(course, student):
-            return "waiting_list"
-        return "already_in_waiting_list"
+        registration = Registration(course=course, student=student, state=state)
+        RegistrationRepository.create(registration)
 
+        RegistrationState.get_state_instance(registration).validate(registration)
+        return registration
 
+    @staticmethod
+    def confirm_presence(course_id, student_id):
+        registration = RegistrationRepository.get_by_course_and_student(course_id, student_id)
+        state = RegistrationState.get_state_instance(registration)
+        state.complete(registration)
+        return registration
