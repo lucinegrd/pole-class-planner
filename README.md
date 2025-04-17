@@ -1,7 +1,8 @@
-<p>
-  <img src="documentation/logo.png" alt="Logo" width="40" style="vertical-align: middle;"/>
-  <span style="font-size: 2em; vertical-align: middle;"><strong>Pole-class-planner</strong></span>
+<p align="center">
+  <img src="documentation/logo.png" alt="Logo" width="60"/>
 </p>
+
+# Pole-class-planner
 
 ## Système de gestion de cours de pole dance pour les professeurs
 
