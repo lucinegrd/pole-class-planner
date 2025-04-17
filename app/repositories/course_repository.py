@@ -1,3 +1,7 @@
+from datetime import datetime
+
+from sqlalchemy.orm import joinedload
+
 from app import db
 from app.models import Course, Student, Level, CourseType, Teacher, Room
 from app.repositories.base_repository import BaseRepository
@@ -11,38 +15,6 @@ class CourseRepository(BaseRepository):
     @classmethod
     def get_all(cls):
         return Course.query.order_by(Course.date).all()
-
-    @staticmethod
-    def add_student(course: Course, student: Student):
-        if student not in course.students and not course.is_full:
-            course.students.append(student)
-            db.session.commit()
-            return True
-        return False  # déjà inscrit ou cours complet
-
-    @staticmethod
-    def add_to_waiting_list(course: Course, student: Student):
-        if student not in course.waiting_list:
-            course.waiting_list.append(student)
-            db.session.commit()
-            return True
-        return False  # déjà en liste d’attente
-
-    @staticmethod
-    def remove_student(course: Course, student: Student):
-        if student in course.students:
-            course.students.remove(student)
-            db.session.commit()
-            return True
-        return False
-
-    @staticmethod
-    def remove_from_waiting_list(course: Course, student: Student):
-        if student in course.waiting_list:
-            course.waiting_list.remove(student)
-            db.session.commit()
-            return True
-        return False
 
     @staticmethod
     def get_filtered(level_name=None, course_type_name=None, teacher_name=None, room_name=None):
@@ -61,3 +33,18 @@ class CourseRepository(BaseRepository):
             query = query.join(Room).filter(Room.name == room_name)
 
         return query.order_by(Course.date).all()
+
+    @classmethod
+    def get_upcoming_courses(cls, today=None, limit=5):
+        today = today or datetime.now()
+        return cls.model.query \
+            .filter(cls.model.date >= today) \
+            .options(
+            joinedload(cls.model.teacher),
+            joinedload(cls.model.level),
+            joinedload(cls.model.course_type),
+            joinedload(cls.model.room)
+        ) \
+            .order_by(cls.model.date.asc()) \
+            .limit(limit) \
+            .all()
