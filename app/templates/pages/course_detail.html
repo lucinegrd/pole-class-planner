@@ -1,0 +1,122 @@
+{% extends "partials/base.html" %}
+
+{% block content %}
+<div class="container">
+    <a href="{{ url_for('courses.get_courses') }}" class="btn btn-yellow mb-3">
+        <i class="bi bi-arrow-left"></i> Retour au calendrier
+    </a>
+    <div class="card shadow-lg border-0">
+        <div class="card-header bg-purple text-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">{{ course.course_type.name }} - {{ course.level.name }}</h4>
+            <span class="badge" style="background-color: {{ course.course_type.color }}">{{ course.course_type.name }}</span>
+        </div>
+        <div class="card-body">
+            <p><strong>Description :</strong> {{ course.course_type.description }}</p>
+            <p><strong>Date :</strong> {{ course.date.strftime('%d/%m/%Y à %Hh%M') }}</p>
+            <p><strong>Durée :</strong> {{ course.course_type.duration }} min</p>
+            <p><strong>Crédit requis :</strong> {{ course.course_type.credit }}</p>
+            <p><strong>Salle :</strong> {{ course.room.name }}</p>
+            <p><strong>Professeur :</strong> {{ course.teacher.first_name }} {{ course.teacher.last_name }}</p>
+            <p><strong>Places restantes :</strong> {{ course.places }}</p>
+
+            <hr>
+            <h5 class="text-purple mb-3">Élèves inscrits</h5>
+            <ul class="list-group" id="student-list">
+                {% for reg in course.registrations %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>{{ reg.student.name }}</span>
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge
+                            {% if reg.state == 'Validé' %}bg-success
+                            {% elif reg.state == 'Sur liste d\'attente' %}bg-warning
+                            {% elif reg.state == 'Confirmé' %}bg-success
+                            {% else %}bg-secondary
+                            {% endif %}"
+                            id="state-{{ reg.student.id }}">
+                            {{ reg.state }}
+                        </span>
+                        {% if reg.state == 'Validé' %}
+                            <button class="btn btn-success btn-sm confirm-btn"
+                                    data-course="{{ course.id }}"
+                                    data-student="{{ reg.student.id }}">
+                                Confirmer présence
+                            </button>
+                        {% endif %}
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+            <hr>
+            <h5 class="text-purple mt-4">Ajouter un élève</h5>
+
+            <form id="add-student-form" class="d-flex gap-2">
+                <input type="text" id="student-search" class="form-control" placeholder="Nom ou prénom de l’élève" required>
+                <button type="submit" class="btn btn-yellow">Ajouter</button>
+            </form>
+            <div id="student-search-result" class="mt-2 text-danger" style="display:none;"></div>
+
+        </div>
+    </div>
+
+
+</div>
+
+<script>
+document.addEventListener('click', function (e) {
+    if (e.target.classList.contains('confirm-btn')) {
+        const btn = e.target;
+        const courseId = btn.dataset.course;
+        const studentId = btn.dataset.student;
+
+        fetch(`/courses/${courseId}/${studentId}/confirm`, {
+            method: 'POST'
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                const badge = document.getElementById(`state-${studentId}`);
+                badge.textContent = data.new_state;
+                badge.className = 'badge bg-success';
+                btn.remove();
+            }
+        });
+    }
+});
+</script>
+<script>
+document.getElementById('add-student-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const query = document.getElementById('student-search').value.trim();
+    const resultBox = document.getElementById('student-search-result');
+    const courseId = {{ course.id }};
+
+    fetch(`/students/search?q=${encodeURIComponent(query)}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.length === 0) {
+                resultBox.textContent = "Aucun élève trouvé.";
+                resultBox.style.display = 'block';
+                return;
+            }
+
+            // On prend le 1er résultat et on l’ajoute au cours
+            const studentId = data[0].id;
+            fetch(`/courses/${courseId}/${studentId}/add`, {
+                method: 'POST'
+            })
+            .then(r => r.json())
+            .then(res => {
+                if (res.success) {
+                    // Recharge ou insère dynamiquement la ligne de l’élève
+                    location.reload();
+                } else {
+                    resultBox.textContent = res.message || "Erreur lors de l'ajout.";
+                    resultBox.style.display = 'block';
+                }
+            });
+        });
+});
+</script>
+
+
+{% endblock %}
