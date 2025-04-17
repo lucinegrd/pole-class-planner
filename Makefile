@@ -53,7 +53,6 @@ run:
 test:
 	PYTHONPATH=. $(VENV_BIN)/pytest tests/ -v
 
-
 test-unit:
 	PYTHONPATH=. $(VENV_BIN)/pytest tests/unit/ -v
 
@@ -66,15 +65,6 @@ test-e2e:
 coverage:
 	PYTHONPATH=. $(VENV_BIN)/pytest --cov=./ --cov-report=term-missing
 
-coverage-html:
-	pytest --cov=./ --cov-report=html
-	@echo "Coverage report generated in htmlcov/index.html"
-
-coverage-xml:
-	pytest --cov=./ --cov-report=xml
-	@echo "Coverage report generated in coverage.xml"
-
-
 clean:
 	find . -type d -name "__pycache__" -exec rm -r {} +
 	find . -type f -name "*.pyc" -delete
@@ -86,7 +76,3 @@ clean:
 	find . -type d -name ".pytest_cache" -exec rm -r {} +
 	find . -type d -name ".mypy_cache" -exec rm -r {} +
 	find . -type d -name "htmlcov" -exec rm -r {} +
-
-reset-db:
-	rm -f database.db
-	python3 seed.py
