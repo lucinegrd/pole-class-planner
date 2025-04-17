@@ -1,0 +1,125 @@
+{% extends "partials/base.html" %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+  <div class="row">
+    <!-- Colonne de gauche : Prochains cours -->
+    <div class="col-md-8">
+      <h3>Prochains cours</h3>
+      <div class="bg-light border rounded p-3" style="height: 600px; overflow-y: auto;">
+        {% if next_courses %}
+          <div class="d-flex flex-column gap-3">
+            {% for course in next_courses %}
+              <a href="{{ url_for('courses.course_detail', id=course.id) }}" class="text-decoration-none text-dark">
+                <div class="p-2 rounded position-relative shadow-sm hover-card" style="background-color: #f9f2ff; border-left: 4px solid {{ course.course_type.color }};">
+                  <div class="d-flex justify-content-between align-items-center mb-1">
+                    <h6 class="fw-bold mb-0">{{ course.course_type.name }}</h6>
+                    <span class="badge rounded-pill" style="background-color: {{ course.level.color }}; font-size: 0.75rem;">
+                      {{ course.level.name }}
+                    </span>
+                  </div>
+                  <small class="text-muted">{{ course.date.strftime('%d/%m/%Y %H:%M') }}</small>
+
+                  <div class="text-muted mt-1" style="font-size: 0.85rem;">
+                    <i class="bi bi-person"></i> {{ course.teacher.first_name }}
+                    <i class="bi bi-clock ms-3"></i> {{ course.course_type.duration }} min
+                  </div>
+
+                  <div class="fw-semibold mt-1" style="font-size: 0.9rem;">
+                    {{ course.places }} places libres
+                  </div>
+                </div>
+              </a>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="text-muted">Aucun cours à venir.</p>
+        {% endif %}
+
+
+
+      </div>
+    </div>
+
+    <!-- Colonne de droite : Notifications -->
+    <div class="col-md-4">
+      <h3>Notifications</h3>
+      <div class="bg-white border rounded p-2" style="height: 600px; overflow-y: auto;">
+        {% for alert in alerts %}
+        <div class="alert-card border rounded mb-2" data-id="{{ alert.id }}">
+          <div class="alert-header d-flex justify-content-between align-items-center px-3 py-2 bg-light cursor-pointer">
+            <strong>{{ alert.type.replace("_", " ").capitalize() }}</strong>
+            <span class="toggle-icon">&#9654;</span> <!-- flèche -->
+          </div>
+          <div class="alert-body px-3 py-2 d-none">
+            <p>{{ alert.message }}</p>
+            <div class="d-flex flex-wrap gap-2">
+              {% for action in alert.actions %}
+                <button class="btn btn-sm btn-outline-primary alert-action-btn" data-action="{{ action }}" data-alert-id="{{ alert.id }}">
+                  {{ action.replace("_", " ").capitalize() }}
+                </button>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll(".alert-header").forEach(header => {
+    header.addEventListener("click", function () {
+      const card = this.parentElement;
+      const body = card.querySelector(".alert-body");
+      const icon = card.querySelector(".toggle-icon");
+
+      const isOpen = !body.classList.contains("d-none");
+
+      // Fermer toutes les autres
+      document.querySelectorAll(".alert-body").forEach(b => b.classList.add("d-none"));
+      document.querySelectorAll(".toggle-icon").forEach(i => i.innerHTML = "&#9654;");
+
+      // Ouvrir celle-ci si elle était fermée
+      if (!isOpen) {
+        body.classList.remove("d-none");
+        icon.innerHTML = "&#9660;"; // flèche vers le bas
+      }
+    });
+  });
+
+  document.addEventListener("click", function (e) {
+    if (e.target.classList.contains("alert-action-btn")) {
+      const action = e.target.dataset.action;
+      const alertId = e.target.dataset.alertId;
+
+      // Pour les actions modales, on ne fait rien ici (ajouter_credits, ajouter_abonnement)
+      if (["ajouter_credits", "ajouter_abonnement"].includes(action)) {
+        console.log("Ouvrir une modale pour:", action, alertId);
+        // TODO: ouvrir une modale personnalisée
+        return;
+      }
+
+      // Actions directes
+      fetch(`/alerts/${alertId}/action`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action })
+      })
+      .then(res => res.json())
+      .then(response => {
+        if (response.success) {
+          // Retirer la carte de l'affichage
+          const card = e.target.closest(".alert-card");
+          card.remove();
+        } else {
+          alert("Erreur: " + response.error);
+        }
+      });
+    }
+  });
+});
+</script>
+{% endblock %}
